@@ -16,9 +16,23 @@
         android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Top Right Profile Button -->
+    <Button
+        android:id="@+id/btnTopProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:text="Profile"
+        android:textSize="12sp"
+        android:textColor="#1A237E"
+        android:backgroundTint="#FFFFFF"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toStartOf="@id/imgNotif"
+        app:layout_constraintTop_toTopOf="@id/tvHelloPassenger"
+        app:layout_constraintBottom_toBottomOf="@id/tvHelloPassenger" />
 
     <!-- Notification Icon -->
     <ImageView
@@ -26,7 +40,7 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@android:drawable/ic_popup_reminder"
-        android:tint="#FFFFFF"
+        app:tint="#FFFFFF"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvHelloPassenger"
@@ -34,12 +48,13 @@
 
     <!-- Bottom White & Yellow Card Container -->
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/bg_card_top_rounded"
         android:padding="24dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvHelloPassenger">
@@ -69,7 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Destination"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,18 +105,18 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="#FFF8E1"
-            android:padding="16dp"
-            android:layout_marginTop="24dp"
+            android:padding="14dp"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilDropoff">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Fare estimate"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textColor="#333333"
                 android:textStyle="bold"
                 android:layout_weight="1"/>
@@ -111,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="₱20.00"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textColor="#000000"
                 android:textStyle="bold"/>
         </LinearLayout>
@@ -120,16 +135,100 @@
         <Button
             android:id="@+id/btnBook"
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="52dp"
             android:text="Book Tricycle"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:backgroundTint="#1A237E"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layoutFare" />
 
+        <!-- Recent Bookings Preview Box -->
+        <LinearLayout
+            android:id="@+id/layoutRecentBookings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#F5F7FA"
+            android:padding="14dp"
+            android:layout_marginTop="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnBook">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Recent Bookings"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#111111" />
+
+                <TextView
+                    android:id="@+id/tvViewRecentBookings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View All >"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A237E" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvRecentPreview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• BatStateU ARASOF → Nasugbu Public Market (₱20.00)"
+                android:textSize="12sp"
+                android:textColor="#555555" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Clean Bottom Navigation Bar (Recent & Profile Only) -->
+    <LinearLayout
+        android:id="@+id/bottomNavBar"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btnBottomRecent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Recent Trips"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#1A237E"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <Button
+            android:id="@+id/btnBottomProfile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="My Profile"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#1A237E"
+            style="?android:attr/borderlessButtonStyle" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

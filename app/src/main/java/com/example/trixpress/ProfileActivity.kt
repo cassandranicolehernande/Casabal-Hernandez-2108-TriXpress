@@ -21,17 +21,30 @@ class ProfileActivity : AppCompatActivity() {
         val btnTripHistory = findViewById<Button?>(R.id.btnTripHistory)
         val btnLogout = findViewById<Button?>(R.id.btnLogout)
 
-        // Display user defaults
-        tvProfileName?.text = "Nasugbu Passenger"
-        tvProfileContact?.text = "+63 912 345 6789"
-        tvProfileZone?.text = "ARASOF Campus / Town Proper Zone"
+        // --- IDagdag ang mga ito: Bottom Navigation Buttons ---
+        val btnNavDashboard = findViewById<Button?>(R.id.btnNavDashboard)
+        val btnNavExplore = findViewById<Button?>(R.id.btnNavExplore)
+        val btnNavHistory = findViewById<Button?>(R.id.btnNavHistory)
+
+        // Kunin ang mga in-input at ipinasa mula sa PassengerRegistrationActivity
+        val name = intent.getStringExtra("USER_NAME") ?: "Nasugbu Passenger"
+        val phone = intent.getStringExtra("USER_PHONE") ?: "+63 912 345 6789"
+        val age = intent.getStringExtra("USER_AGE") ?: ""
+        val address = intent.getStringExtra("USER_ADDRESS") ?: "ARASOF Campus / Town Proper Zone"
+        val email = intent.getStringExtra("USER_EMAIL") ?: ""
+
+        // I-display ang totoong impormasyon sa mga TextViews
+        tvProfileName?.text = name
+        tvProfileContact?.text = if (email.isNotEmpty()) "$phone | $email" else phone
+        tvProfileZone?.text = if (age.isNotEmpty()) "$address (Age: $age)" else address
 
         btnEditProfile?.setOnClickListener {
             Toast.makeText(this, "Edit profile feature selected", Toast.LENGTH_SHORT).show()
         }
 
         btnTripHistory?.setOnClickListener {
-            Toast.makeText(this, "Opening Recent Bookings History", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, TripHistoryActivity::class.java)
+            startActivity(intent)
         }
 
         btnLogout?.setOnClickListener {
@@ -40,6 +53,22 @@ class ProfileActivity : AppCompatActivity() {
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
+        }
+
+        // --- IDagdag ang mga ito: Click Listeners para sa Bottom Navigation ---
+        btnNavDashboard?.setOnClickListener {
+            val intent = Intent(this, PassengerDashboardActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnNavExplore?.setOnClickListener {
+            val intent = Intent(this, ServiceZoneActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnNavHistory?.setOnClickListener {
+            val intent = Intent(this, TripHistoryActivity::class.java)
+            startActivity(intent)
         }
     }
 }

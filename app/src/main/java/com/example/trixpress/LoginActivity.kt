@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.trixpress.PassengerRegistrationActivity
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,15 +18,18 @@ class LoginActivity : AppCompatActivity() {
 
         btnLogin.setOnClickListener {
             val phoneNumber = etPhone.text.toString().trim()
+
             if (phoneNumber.isNotEmpty()) {
-                val intent = Intent(this, PassengerDashboardActivity::class.java)
+                Toast.makeText(this, "Verification Successful!", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, PassengerRegistrationActivity::class.java).apply {
+                    putExtra("USER_PHONE", phoneNumber)
+                }
                 startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(this, "Please enter your phone number", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 }
-

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Permissions for Google Maps and Location Services -->
+    <!-- Internet and network permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Location permissions for Google Maps -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -17,30 +19,46 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TriXpress">
 
-        <!-- Google Maps API Key Meta-data -->
+        <!-- Google Maps API Key -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyC_00rrVO4ltS49VSS9KmrLdqDDiMnRl9o" />
 
+        <!-- Splash Screen -->
         <activity
             android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Login Activity with Firebase Email Link -->
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="https"
+                    android:host="trixpress-a8f3c.firebaseapp.com"
+                    android:pathPrefix="/__/auth/links" />
+            </intent-filter>
+        </activity>
+
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false" />
-
+        <!-- Passenger Activities -->
         <activity
             android:name=".PassengerRegistrationActivity"
             android:exported="false"
@@ -51,40 +69,48 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Driver Activity -->
         <activity
             android:name=".DriverDashboardActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Service Zone -->
         <activity
             android:name=".ServiceZoneActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Tracking -->
         <activity
             android:name=".TrackingActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Trip History -->
         <activity
             android:name=".TripHistoryActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Map -->
         <activity
             android:name=".MapActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Booking Confirmation -->
         <activity
             android:name=".BookingConfirmationActivity"
             android:exported="false" />
 
+        <!-- Receipt -->
         <activity
             android:name=".ReceiptActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <!-- Profile -->
         <activity
             android:name=".ProfileActivity"
             android:exported="false"

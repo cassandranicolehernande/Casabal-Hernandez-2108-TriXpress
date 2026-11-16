@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "492929877054",
+    "project_id": "trixpress-a8f3c",
+    "storage_bucket": "trixpress-a8f3c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492929877054:android:546c4773db7896b1c33d6f",
+        "android_client_info": {
+          "package_name": "com.example.trixpress"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1zd5C-KOXvqbNLHD6rdwVG4MQY3OvPY0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

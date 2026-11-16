@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Map View Fragment -->
+    <fragment
+        android:id="@+id/trackingMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Top Status Overlay -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#DD111111"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ride In Progress"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvTrackingDriver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver: Kuya Mario (Bunducan TODA)"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Bottom Tracking Bottom Sheet Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:padding="20dp"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Live Tracking"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#111111" />
+
+                <TextView
+                    android:id="@+id/tvEstimatedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Estimated Arrival: 15 mins"
+                    android:textSize="13sp"
+                    android:textColor="#777777" />
+            </LinearLayout>
+
+            <!-- SOS Button -->
+            <Button
+                android:id="@+id/btnSos"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="H"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#D32F2F" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnCompleteTrip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Complete Trip &amp; View Receipt"
+            android:backgroundTint="#111111"
+            android:textColor="@android:color/white"
+            android:padding="12dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

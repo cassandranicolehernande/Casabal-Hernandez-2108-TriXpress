@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Title Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Driver Dashboard"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#111111"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Incoming Ride Request Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:elevation="3dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Incoming Ride Request"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#D32F2F"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pickup Location"
+                android:textSize="12sp"
+                android:textColor="#888888" />
+
+            <TextView
+                android:id="@+id/tvDriverPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BatStateU ARASOF Campus"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#111111"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destination"
+                android:textSize="12sp"
+                android:textColor="#888888" />
+
+            <TextView
+                android:id="@+id/tvDriverDestination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nasugbu Public Market"
+                android:textSize="15sp"
+                android:textColor="#222222"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:id="@+id/tvDriverFare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Est. Fare: ₱50.00"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#2E7D32"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnAcceptRide"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Accept"
+                    android:backgroundTint="#1976D2"
+                    android:textColor="@android:color/white"
+                    android:layout_marginEnd="8dp" />
+
+                <Button
+                    android:id="@+id/btnDeclineRide"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Decline"
+                    android:backgroundTint="#D32F2F"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Earnings Summary Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="16dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Earnings"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#888888"
+                android:layout_marginBottom="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Completed Rides Today"
+                    android:textColor="#555555" />
+
+                <TextView
+                    android:id="@+id/tvCompletedRides"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8 rides"
+                    android:textStyle="bold"
+                    android:textColor="#111111" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Total Earnings"
+                    android:textColor="#555555" />
+
+                <TextView
+                    android:id="@+id/tvTotalEarnings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱450.00"
+                    android:textStyle="bold"
+                    android:textColor="#2E7D32" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

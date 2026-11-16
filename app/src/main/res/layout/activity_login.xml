@@ -4,71 +4,195 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F8F9FA"
     android:padding="24dp">
 
-    <!-- Top Location Pin Icon -->
+    <!-- TriXpress Logo -->
     <ImageView
         android:id="@+id/imgLoginPin"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="95dp"
+        android:layout_height="95dp"
         android:src="@drawable/mapicon"
-        android:contentDescription="Location Pin"
-        app:layout_constraintBottom_toTopOf="@id/tvLoginTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:scaleType="fitCenter"
+        android:contentDescription="TriXpress Logo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintBottom_toTopOf="@id/tvAppName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"/>
 
-    <!-- Title: Phone number/OTP -->
+    <!-- App Name -->
+    <TextView
+        android:id="@+id/tvAppName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TriXpress"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#1E3A8A"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/imgLoginPin"
+        app:layout_constraintBottom_toTopOf="@id/tvTagline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Tagline -->
+    <TextView
+        android:id="@+id/tvTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ride. Dispatch. Arrive."
+        android:textSize="13sp"
+        android:textColor="#666666"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@id/tvAppName"
+        app:layout_constraintBottom_toTopOf="@id/tvLoginTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Login Heading -->
     <TextView
         android:id="@+id/tvLoginTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Phone number/OTP"
-        android:textSize="18sp"
+        android:text="CONFIRM MOBILE NUMBER"
+        android:textSize="17sp"
         android:textStyle="bold"
-        android:textColor="#000000"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@id/tilPhone"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="#222222"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toBottomOf="@id/tvTagline"
+        app:layout_constraintBottom_toTopOf="@id/tvInstruction"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgLoginPin" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Phone Number Input Layout -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilPhone"
+    <!-- Instruction -->
+    <TextView
+        android:id="@+id/tvInstruction"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:hint="Phone number"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:layout_constraintBottom_toTopOf="@id/btnLogin"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="A security code will be sent to verify your identity."
+        android:textSize="12sp"
+        android:textColor="#777777"
+        android:gravity="center"
+        android:layout_marginTop="7dp"
+        app:layout_constraintTop_toBottomOf="@id/tvLoginTitle"
+        app:layout_constraintBottom_toTopOf="@id/phoneContainer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvLoginTitle">
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etPhone"
-            android:layout_width="match_parent"
+    <!-- Phone Number Container -->
+    <LinearLayout
+        android:id="@+id/phoneContainer"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:background="@drawable/bg_phone_input"
+        android:layout_marginTop="25dp"
+        app:layout_constraintTop_toBottomOf="@id/tvInstruction"
+        app:layout_constraintBottom_toTopOf="@id/tvTrouble"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Philippine Flag -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="🇵🇭"
+            android:textSize="19sp"/>
+
+        <!-- Country Code -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" +63  ▾"
+            android:textColor="#333333"
+            android:textSize="14sp"
+            android:layout_marginStart="5dp"/>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="1dp"
+            android:layout_height="28dp"
+            android:background="#CCCCCC"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"/>
+
+        <!-- Phone Number -->
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:hint="Mobile Number"
+            android:textColor="#222222"
+            android:textColorHint="#999999"
+            android:textSize="14sp"
             android:inputType="phone"
-            android:maxLines="1" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:maxLength="13"
+            android:singleLine="true"
+            android:padding="0dp"/>
 
+        <!-- Phone Icon -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="☎"
+            android:textSize="18sp"
+            android:textColor="#1E3A8A"
+            android:layout_marginStart="5dp"/>
 
+    </LinearLayout>
+
+    <!-- Trouble Receiving Code -->
+    <TextView
+        android:id="@+id/tvTrouble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Trouble receiving code?"
+        android:textSize="12sp"
+        android:textColor="#1E3A8A"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/phoneContainer"
+        app:layout_constraintBottom_toTopOf="@id/tvEmailLogin"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Email Login -->
+    <TextView
+        android:id="@+id/tvEmailLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login with email instead. →"
+        android:textSize="13sp"
+        android:textColor="#1E3A8A"
+        android:layout_marginTop="28dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toBottomOf="@id/tvTrouble"
+        app:layout_constraintBottom_toTopOf="@id/btnLogin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Login Button -->
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
         android:layout_height="55dp"
-        android:text="Login"
+        android:text="LOGIN"
+        android:textSize="15sp"
+        android:textStyle="bold"
         android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        android:backgroundTint="#1A237E"
-        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_login_button"
+        android:backgroundTint="@null"
+        android:layout_marginTop="25dp"
+        app:layout_constraintTop_toBottomOf="@id/tvEmailLogin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tilPhone" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

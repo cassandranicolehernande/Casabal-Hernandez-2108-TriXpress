@@ -3,6 +3,8 @@ package com.example.trixpress
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.AutoCompleteTextView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -27,7 +29,16 @@ class DriverRegistrationActivity : AppCompatActivity() {
         val etMiddleName = findViewById<EditText>(R.id.etDriverMiddleName)
         val etLicense = findViewById<EditText>(R.id.etDriverLicense)
 
-        val etType = findViewById<EditText>(R.id.etTricycleType)
+        val etType = findViewById<AutoCompleteTextView>(R.id.etTricycleType)
+        val tricycleTypes = arrayOf("Honda", "Yamaha", "Suzuki", "Kawasaki", "Bajaj", "E-Trike", "TVS", "Kymco", "Rusi")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tricycleTypes)
+        etType.setAdapter(adapter)
+        etType.setOnClickListener { etType.showDropDown() }
+        etType.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                etType.showDropDown()
+            }
+        }
         val etPlate = findViewById<EditText>(R.id.etPlateNumber)
         // FIXED: Changed from tvUnitHeader to tvUnitTitle to match XML
         val tvUnitTitle = findViewById<TextView>(R.id.tvUnitTitle)

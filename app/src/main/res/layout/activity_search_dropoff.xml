@@ -57,64 +57,114 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:hint="Drop off to?"
+                android:hint="Choose drop-off on map or type..."
                 android:textColorHint="#CCFFFFFF"
                 android:textColor="#FFFFFF"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Body (Search Options) -->
-    <LinearLayout
+    <!-- Body (Service & Ride Options) -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Choose Ride Mode:"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"/>
-
-        <!-- Pasabay / Kasya Options -->
-        <RadioGroup
-            android:id="@+id/rgRideMode"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="24dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <RadioButton
-                android:id="@+id/rbPasabay"
+            <!-- Choose Service Type (Angkas-style) -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pasabay lang po!"
-                android:checked="true"
-                android:layout_marginEnd="16dp"/>
+                android:text="Choose Service Type:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp"/>
 
-            <RadioButton
-                android:id="@+id/rbKasya"
+            <RadioGroup
+                android:id="@+id/rgServiceType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <RadioButton
+                    android:id="@+id/rbServiceRide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="🛺 Tricycle Ride (Standard Passenger)"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbServiceDelivery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="📦 Express Parcel / Pasalubong Delivery"
+                    android:textColor="#333333"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="4dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbServicePakyaw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="👑 Pakyaw Charter (Whole Unit)"
+                    android:textColor="#333333"
+                    android:textSize="14sp"/>
+            </RadioGroup>
+
+            <!-- Choose Ride Mode -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Kasya kami riyan!"/>
-        </RadioGroup>
+                android:text="Choose Capacity Mode:"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp"/>
 
-        <!-- Confirm Button -->
-        <Button
-            android:id="@+id/btnConfirmBooking"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="Book Kana"
-            android:backgroundTint="#FFC107"
-            android:textColor="#1A237E"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            app:cornerRadius="12dp" />
+            <RadioGroup
+                android:id="@+id/rgRideMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
 
-    </LinearLayout>
+                <RadioButton
+                    android:id="@+id/rbPasabay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pasabay lang po!"
+                    android:checked="true"
+                    android:layout_marginEnd="16dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbKasya"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Kasya kami riyan!"/>
+            </RadioGroup>
+
+            <!-- Confirm Button -->
+            <Button
+                android:id="@+id/btnConfirmBooking"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Book TriXpress Now"
+                android:backgroundTint="#FFC107"
+                android:textColor="#1A237E"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

@@ -1,6 +1,16 @@
 <resources>
+    <!-- Your Colors -->
     <color name="app_blue">#1A237E</color>
     <color name="app_yellow">#FFC107</color>
-    <color name="glass_white">#CCFFFFFF</color> <!-- 80% opaque white -->
+
+    <!-- CHANGED: Made this much more transparent for the glass effect -->
+    <color name="glass_white">#4DFFFFFF</color>
+
     <color name="glass_border">#80FFFFFF</color>
+
+    <!-- Added for Readability -->
+    <color name="text_dark">#0F172A</color>
+    <color name="text_hint">#666666</color>
+    <color name="text_light">#F8FAFC</color>
+    <color name="glass_edittext_line">#801A237E</color>
 </resources>

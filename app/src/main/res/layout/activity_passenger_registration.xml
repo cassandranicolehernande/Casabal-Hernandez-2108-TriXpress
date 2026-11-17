@@ -40,65 +40,69 @@
             <EditText
                 android:id="@+id/etLastName"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="52dp"
                 android:layout_marginBottom="16dp"
-                android:background="@android:color/white"
-                android:elevation="2dp"
+                android:background="@drawable/bg_edittext_glass"
                 android:hint="Last Name"
                 android:inputType="textPersonName"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
 
             <!-- First Name -->
             <EditText
                 android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="52dp"
                 android:layout_marginBottom="16dp"
-                android:background="@android:color/white"
-                android:elevation="2dp"
+                android:background="@drawable/bg_edittext_glass"
                 android:hint="First Name"
                 android:inputType="textPersonName"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
 
             <!-- Middle Name -->
             <EditText
                 android:id="@+id/etMiddleName"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="52dp"
                 android:layout_marginBottom="16dp"
-                android:background="@android:color/white"
-                android:elevation="2dp"
+                android:background="@drawable/bg_edittext_glass"
                 android:hint="Middle Name (Optional)"
                 android:inputType="textPersonName"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
 
             <!-- Contact Number -->
             <EditText
                 android:id="@+id/etContact"
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
+                android:layout_height="52dp"
                 android:layout_marginBottom="24dp"
-                android:background="@android:color/white"
-                android:elevation="2dp"
+                android:background="@drawable/bg_edittext_glass"
                 android:hint="Contact Number"
                 android:inputType="phone"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp" />
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
 
             <!-- Submit Button -->
-            <Button
+            <android.widget.Button
                 android:id="@+id/btnSubmitRegistration"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:backgroundTint="#FFC107"
+                android:background="@drawable/bg_btn_yellow"
+                android:elevation="4dp"
                 android:text="Complete Registration"
-                android:textColor="#1A237E"
+                android:textColor="#000000"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:cornerRadius="12dp" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 

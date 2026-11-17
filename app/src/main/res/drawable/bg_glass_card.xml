@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#D9FFFFFF" /> <!-- Semi-transparent white -->
-    <corners android:radius="24dp" />
+    <!-- Clear with yellow glassmorphism effect and oval-rectangle / pill shape -->
+    <solid android:color="#33FFC107" />
+    <corners android:radius="36dp" />
     <stroke
-        android:width="1dp"
-        android:color="#80FFFFFF" />
+        android:width="1.5dp"
+        android:color="#80FFE082" />
 </shape>

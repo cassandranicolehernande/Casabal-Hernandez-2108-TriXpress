@@ -47,8 +47,7 @@ class PassengerDashboardActivity : AppCompatActivity(), OnMapReadyCallback {
         val btnChoosePickup = findViewById<Button>(R.id.btnChoosePickup)
         btnChoosePickup.text = "Book Kana"
         btnChoosePickup.setOnClickListener {
-            val intent = Intent(this, SearchDropoffActivity::class.java)
-            intent.putExtra("PICKUP_LOCATION", "Nasugbu, Batangas, Philippines")
+            val intent = Intent(this, MapPickerActivity::class.java)
             startActivity(intent)
         }
     }

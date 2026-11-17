@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#F8F9FA"
+    android:padding="24dp">
+
+    <!-- Status Icon / Illustration placeholder -->
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:text="⏳"
+        android:textSize="48sp"
+        android:gravity="center"
+        android:layout_marginBottom="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Application Under Review"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1E3A8A"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvApprovalStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="An admin will examine your information, license, and compliance with TriXpress rules and terms &amp; conditions. Please wait for approval."
+        android:textSize="14sp"
+        android:textColor="#555555"
+        android:gravity="center"
+        android:lineSpacingExtra="6dp"
+        android:layout_marginBottom="30dp" />
+
+    <Button
+        android:id="@+id/btnCheckStatus"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Refresh / Check Status"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#1E3A8A"
+        android:textStyle="bold" />
+
+</LinearLayout>

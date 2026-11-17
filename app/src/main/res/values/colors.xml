@@ -1,5 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="app_blue">#1A237E</color>
+    <color name="app_yellow">#FFC107</color>
+    <color name="glass_white">#CCFFFFFF</color> <!-- 80% opaque white -->
+    <color name="glass_border">#80FFFFFF</color>
 </resources>

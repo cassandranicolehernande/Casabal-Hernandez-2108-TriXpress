@@ -16,8 +16,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-
-    // Mock route locations: ARASOF Campus to Public Market
     private val pickupLocation = LatLng(14.0689, 120.6295)
     private val destinationLocation = LatLng(14.0722, 120.6341)
 
@@ -37,13 +35,15 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Mario (Bunducan TODA)"
         val pickupLoc = intent.getStringExtra("PICKUP_LOC") ?: "BatStateU ARASOF Campus"
         val destLoc = intent.getStringExtra("DEST_LOC") ?: "Nasugbu Public Market"
+        val mode = intent.getStringExtra("BOOKING_MODE") ?: "Pasabay lang po!"
         val estFare = intent.getStringExtra("EST_FARE") ?: "₱50.00"
 
-        tvTrackingDriver?.text = "Driver: $driverName"
+        // Show Booking Mode and Driver Name
+        tvTrackingDriver?.text = "Driver: $driverName ($mode)"
         tvEstimatedTime?.text = "Estimated Arrival: 10 mins"
 
         btnSos?.setOnClickListener {
-            Toast.makeText(this, "Emergency Alert Sent to Local TODA & Emergency Contacts!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Emergency Alert Sent!", Toast.LENGTH_LONG).show()
         }
 
         btnCompleteTrip?.setOnClickListener {
@@ -62,19 +62,9 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 15f))
 
-        mMap.addMarker(
-            MarkerOptions()
-                .position(pickupLocation)
-                .title("Pickup: BatStateU ARASOF Campus")
-        )
-
-        mMap.addMarker(
-            MarkerOptions()
-                .position(destinationLocation)
-                .title("Destination: Nasugbu Public Market")
-        )
+        mMap.addMarker(MarkerOptions().position(pickupLocation).title("Pickup Location"))
+        mMap.addMarker(MarkerOptions().position(destinationLocation).title("Destination"))
     }
 }

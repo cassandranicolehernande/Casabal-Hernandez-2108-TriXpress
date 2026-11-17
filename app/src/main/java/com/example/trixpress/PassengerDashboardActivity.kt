@@ -2,62 +2,59 @@ package com.example.trixpress
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.Toast
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.navigation.NavigationView
 
-class PassengerDashboardActivity : AppCompatActivity() {
+class PassengerDashboardActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private lateinit var mMap: GoogleMap
+    private lateinit var drawerLayout: DrawerLayout
+    private val passengerLocation = LatLng(14.0689, 120.6295)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_passenger_dashboard)
 
-        // Listahan ng mga lokasyon sa Nasugbu, Batangas lamang
-        val nasugbuLocations = arrayOf(
-            "BatStateU ARASOF - Nasugbu",
-            "Nasugbu Poblacion",
-            "Wawa, Nasugbu",
-            "Bucana, Nasugbu",
-            "Kaylaway, Nasugbu",
-            "Bunducan, Nasugbu",
-            "Natipuan, Nasugbu",
-            "Palico, Nasugbu",
-            "Looc, Nasugbu",
-            "Pantalan, Nasugbu",
-            "Banilad, Nasugbu",
-            " Aga, Nasugbu",
-            "7-Eleven Westmead Gate",
-            "Nasugbu Public Market"
-        )
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
-        // Adapter para lumitaw ang mga choices
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nasugbuLocations)
+        drawerLayout = findViewById(R.id.drawerLayout)
+        val navView = findViewById<NavigationView>(R.id.nav_view)
+        val btnOpenDrawer = findViewById<ImageView>(R.id.btnOpenDrawer)
 
-        val etPickup = findViewById<AutoCompleteTextView>(R.id.etPickup)
-        val etDropoff = findViewById<AutoCompleteTextView>(R.id.etDropoff)
-        val btnBook = findViewById<Button>(R.id.btnBook)
-
-        // I-set ang adapter at sabihing magpakita agad kahit 0 letters pa lang ang i-type o i-click
-        etPickup.setAdapter(adapter)
-        etPickup.threshold = 0
-        etPickup.setOnClickListener { etPickup.showDropDown() }
-
-        etDropoff.setAdapter(adapter)
-        etDropoff.threshold = 0
-        etDropoff.setOnClickListener { etDropoff.showDropDown() }
-
-        btnBook.setOnClickListener {
-            val pickup = etPickup.text.toString().trim()
-            val dropoff = etDropoff.text.toString().trim()
-
-            if (pickup.isNotEmpty() && dropoff.isNotEmpty()) {
-                Toast.makeText(this, "Finding your tricycle...", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MapActivity::class.java)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "Please enter pickup and destination", Toast.LENGTH_SHORT).show()
-            }
+        btnOpenDrawer.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
         }
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            if (menuItem.itemId == R.id.nav_history) {
+                startActivity(Intent(this, TripHistoryActivity::class.java))
+            }
+            drawerLayout.closeDrawer(GravityCompat.START)
+            true
+        }
+
+        // FIXED: Now goes to SearchDropoffActivity to pick destination & mode
+        val btnChoosePickup = findViewById<Button>(R.id.btnChoosePickup)
+        btnChoosePickup.text = "Book Kana"
+        btnChoosePickup.setOnClickListener {
+            val intent = Intent(this, SearchDropoffActivity::class.java)
+            intent.putExtra("PICKUP_LOCATION", "Nasugbu, Batangas, Philippines")
+            startActivity(intent)
+        }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(passengerLocation, 15f))
     }
 }

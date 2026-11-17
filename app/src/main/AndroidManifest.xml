@@ -69,7 +69,12 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- Driver Activity -->
+        <!-- Driver Activities -->
+        <activity
+            android:name=".DriverRegistrationActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".DriverDashboardActivity"
             android:exported="false"
@@ -113,6 +118,11 @@
         <!-- Profile -->
         <activity
             android:name=".ProfileActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".DriverPendingApprovalActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 

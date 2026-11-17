@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Driver Registration Portal"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#1E3A8A"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- STEP 1: Personal Information & 2x2 Photo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Step 1: Personal Information"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/etDriverLastName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Last Name"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDriverFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="First Name"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDriverMiddleName"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Middle Name (Optional)"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etDriverLicense"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Driver's License Number"
+                android:inputType="text"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnUploadDriver2x2"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="Upload 2x2 Picture of Driver"
+                android:backgroundTint="#334155"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvDriver2x2Status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No 2x2 picture attached"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- STEP 2: Tricycle Unit Details (Multiple units support) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:padding="16dp"
+            android:elevation="2dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/tvUnitTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Step 2: Tricycle Details (Unit 1)"
+                android:textStyle="bold"
+                android:textColor="#222222"
+                android:textSize="15sp"
+                android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/etTricycleType"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Type of Tricycle (e.g., Honda / Kawasaki - 4 Seater)"
+                android:inputType="text"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etPlateNumber"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:hint="Plate Number (e.g., AB-1234)"
+                android:inputType="text"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btnUploadTricyclePic"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="Upload Picture of Tricycle"
+                android:backgroundTint="#334155"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvTricyclePicStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No tricycle picture attached"
+                android:textSize="12sp"
+                android:textColor="#666666"
+                android:gravity="center"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Add Another Unit Button -->
+            <Button
+                android:id="@+id/btnAddAnotherUnit"
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="+ Add Another Tricycle Unit"
+                android:backgroundTint="#059669"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- Submit for Admin Approval -->
+        <Button
+            android:id="@+id/btnSubmitDriverReg"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Complete Registration &amp; Submit to Admin"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1E3A8A"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

@@ -74,7 +74,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
                 return@setOnClickListener
             }
 
-            val displayList = nearbyDrivers.map { "${it.name} - ${it.toda} (${it.fare})" }.toTypedArray()
+            val displayList = nearbyDrivers.map { "${it.name}\n${it.toda} (${it.fare})" }.toTypedArray()
 
             val builder = android.app.AlertDialog.Builder(this)
             builder.setTitle("Nearby TODA Drivers Only")
@@ -118,7 +118,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
             mMap.addMarker(
                 MarkerOptions()
                     .position(driver.location)
-                    .title("${driver.name} - ${driver.toda}")
+                    .title("${driver.name}\n${driver.toda}")
                     .snippet("Fare: ${driver.fare}")
             )
         }

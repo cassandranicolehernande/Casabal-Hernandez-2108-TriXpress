@@ -8,6 +8,7 @@ import android.text.InputType
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -34,10 +35,18 @@ class LoginActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
         val tvTrouble = findViewById<TextView>(R.id.tvTrouble)
         val tvEmailLogin = findViewById<TextView>(R.id.tvEmailLogin)
+        val rgRole = findViewById<RadioGroup>(R.id.rgRole)
+        val tvRegisterDriver = findViewById<TextView>(R.id.tvRegisterDriver)
 
         // Underline Trouble Receiving Code
         tvTrouble.paintFlags =
             tvTrouble.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+
+        // REGISTER AS DRIVER LINK CLICK
+        tvRegisterDriver?.setOnClickListener {
+            val intent = Intent(this, DriverRegistrationActivity::class.java)
+            startActivity(intent)
+        }
 
         // PHONE NUMBER LOGIN
         btnLogin.setOnClickListener {
@@ -68,14 +77,15 @@ class LoginActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
 
-                // Proceed to Passenger Registration
-                val intent = Intent(
-                    this,
-                    PassengerRegistrationActivity::class.java
-                )
+                // Check kung Driver o Passenger ang pinili sa RadioGroup
+                val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
+                val intent = if (selectedRoleId == R.id.rbDriver) {
+                    Intent(this, DriverRegistrationActivity::class.java)
+                } else {
+                    Intent(this, PassengerRegistrationActivity::class.java)
+                }
 
                 intent.putExtra("USER_PHONE", formattedNumber)
-
                 startActivity(intent)
                 finish()
 
@@ -275,11 +285,15 @@ class LoginActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    // Continue to Passenger Registration
-                    val nextIntent = Intent(
-                        this,
-                        PassengerRegistrationActivity::class.java
-                    )
+                    // Suriin kung Driver o Passenger ang napili bago ituloy ang intent
+                    val rgRole = findViewById<RadioGroup>(R.id.rgRole)
+                    val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
+
+                    val nextIntent = if (selectedRoleId == R.id.rbDriver) {
+                        Intent(this, DriverRegistrationActivity::class.java)
+                    } else {
+                        Intent(this, PassengerRegistrationActivity::class.java)
+                    }
 
                     nextIntent.putExtra("USER_EMAIL", email)
 

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <!-- Top Blue Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4AA6EB"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Pickup Indicator -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@android:drawable/presence_online"
+                app:tint="#FFFFFF" />
+            <TextView
+                android:id="@+id/tvSearchPickup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nasugbu, Batangas, Philippines"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- Drop-off Input -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_card_top_rounded"
+            android:backgroundTint="#33FFFFFF"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@android:drawable/ic_menu_mylocation"
+                app:tint="#FFFFFF" />
+
+            <EditText
+                android:id="@+id/etSearchDropoff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="Drop off to?"
+                android:textColorHint="#CCFFFFFF"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="8dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Body (Search Options) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Ride Mode:"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#333333"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Pasabay / Kasya Options -->
+        <RadioGroup
+            android:id="@+id/rgRideMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="24dp">
+
+            <RadioButton
+                android:id="@+id/rbPasabay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pasabay lang po!"
+                android:checked="true"
+                android:layout_marginEnd="16dp"/>
+
+            <RadioButton
+                android:id="@+id/rbKasya"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kasya kami riyan!"/>
+        </RadioGroup>
+
+        <!-- Confirm Button -->
+        <Button
+            android:id="@+id/btnConfirmBooking"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="Book Kana"
+            android:backgroundTint="#FFC107"
+            android:textColor="#1A237E"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+</LinearLayout>

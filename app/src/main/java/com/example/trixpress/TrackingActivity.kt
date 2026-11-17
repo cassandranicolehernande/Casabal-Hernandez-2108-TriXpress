@@ -16,16 +16,29 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 
 class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
-    private val pickupLocation = LatLng(14.0689, 120.6295)
-    private val destinationLocation = LatLng(14.0722, 120.6341)
+
+    // Realistic Nasugbu road waypoints (following J.P. Laurel St., Alix St., R. Martinez St.)
+    private val roadWaypoints = listOf(
+        LatLng(14.0689, 120.6295), // Start / Pick-up (Near Barangay 10)
+        LatLng(14.0694, 120.6302), // Moving towards J.P. Laurel St.
+        LatLng(14.0702, 120.6314), // Cruising along J.P. Laurel St.
+        LatLng(14.0712, 120.6322), // Turning onto Alix St.
+        LatLng(14.0722, 120.6341)  // Destination (Barangay 4)
+    )
+
+    private val pickupLocation = roadWaypoints.first()
+    private val destinationLocation = roadWaypoints.last()
 
     private var driverMarker: Marker? = null
     private val handler = Handler(Looper.getMainLooper())
-    private var simulationStep = 0
+    private var waypointIndex = 0
+    private var subStep = 0
+    private val totalSubStepsPerSegment = 5
 
     private var tripPhase = 1 // 1 = Arriving at Pickup, 2 = En Route to Drop-off
 
@@ -71,16 +84,16 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         btnActionTrip.setOnClickListener {
             if (tripPhase == 1) {
-                // Phase 1 -> Phase 2: Driver arrived, start trip to dropoff
+                // Phase 1 -> Phase 2: Driver arrived, start trip following road waypoints
                 tripPhase = 2
                 tvTripStatusTitle.text = "🛺 En Route to Drop-off"
-                tvTrackingInstruction.text = "Heading to destination..."
-                tvEstimatedTime.text = "Estimated Arrival: 5 mins"
+                tvTrackingInstruction.text = "Driving along J.P. Laurel St. & Alix St..."
+                tvEstimatedTime.text = "Estimated Arrival: 4 mins"
                 btnActionTrip.text = "Complete Trip & View Receipt"
-                Toast.makeText(this, "Driver confirmed arrival! Trip started.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Driver confirmed arrival! Driving along the road.", Toast.LENGTH_SHORT).show()
 
-                // Start live moving simulation towards destination
-                startLiveDriverMovement()
+                // Start road-following live movement simulation
+                startRoadFollowingDriverMovement()
             } else {
                 // Trip complete -> Receipt
                 handler.removeCallbacksAndMessages(null)
@@ -101,12 +114,21 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 16f))
+        mMap.isTrafficEnabled = true
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(pickupLocation, 17f))
 
         mMap.addMarker(MarkerOptions().position(pickupLocation).title("Pick-up Location"))
         mMap.addMarker(MarkerOptions().position(destinationLocation).title("Drop-off Destination"))
 
-        val initialDriverPos = LatLng(14.0685, 120.6290)
+        // Draw Google Maps Route Polyline precisely following Nasugbu road waypoints
+        mMap.addPolyline(
+            PolylineOptions()
+                .addAll(roadWaypoints)
+                .width(14f)
+                .color(android.graphics.Color.parseColor("#4AA6EB")) // Navigation blue route on roads
+        )
+
+        val initialDriverPos = roadWaypoints[0]
         driverMarker = mMap.addMarker(
             MarkerOptions()
                 .position(initialDriverPos)
@@ -114,28 +136,37 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         )
     }
 
-    private fun startLiveDriverMovement() {
-        val latStep = (destinationLocation.latitude - pickupLocation.latitude) / 10.0
-        val lngStep = (destinationLocation.longitude - pickupLocation.longitude) / 10.0
-        simulationStep = 0
+    private fun startRoadFollowingDriverMovement() {
+        waypointIndex = 0
+        subStep = 0
 
         val runnable = object : Runnable {
             override fun run() {
-                if (simulationStep <= 10) {
-                    val currentLat = pickupLocation.latitude + (latStep * simulationStep)
-                    val currentLng = pickupLocation.longitude + (lngStep * simulationStep)
+                if (waypointIndex < roadWaypoints.size - 1) {
+                    val startPoint = roadWaypoints[waypointIndex]
+                    val endPoint = roadWaypoints[waypointIndex + 1]
+
+                    val currentLat = startPoint.latitude + (endPoint.latitude - startPoint.latitude) * (subStep.toFloat() / totalSubStepsPerSegment)
+                    val currentLng = startPoint.longitude + (endPoint.longitude - startPoint.longitude) * (subStep.toFloat() / totalSubStepsPerSegment)
                     val newPos = LatLng(currentLat, currentLng)
 
                     driverMarker?.position = newPos
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(newPos))
 
-                    val remainingMins = Math.max(1, 5 - (simulationStep / 2))
+                    val remainingMins = Math.max(1, 4 - waypointIndex)
                     findViewById<TextView>(R.id.tvEstimatedTime).text = "Estimated Arrival: $remainingMins min(s) away"
 
-                    simulationStep++
-                    handler.postDelayed(this, 3000)
+                    subStep++
+                    if (subStep > totalSubStepsPerSegment) {
+                        subStep = 0
+                        waypointIndex++
+                    }
+
+                    handler.postDelayed(this, 2000)
                 } else {
+                    driverMarker?.position = destinationLocation
                     findViewById<TextView>(R.id.tvEstimatedTime).text = "Arrived at drop-off destination!"
+                    Toast.makeText(this@TrackingActivity, "You have arrived at your destination!", Toast.LENGTH_LONG).show()
                 }
             }
         }

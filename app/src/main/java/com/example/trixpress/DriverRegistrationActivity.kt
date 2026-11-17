@@ -31,8 +31,9 @@ class DriverRegistrationActivity : AppCompatActivity() {
 
         val etType = findViewById<AutoCompleteTextView>(R.id.etTricycleType)
         val tricycleTypes = arrayOf("Honda", "Yamaha", "Suzuki", "Kawasaki", "Bajaj", "E-Trike", "TVS", "Kymco", "Rusi")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tricycleTypes)
+        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, tricycleTypes)
         etType.setAdapter(adapter)
+        etType.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
         etType.setOnClickListener { etType.showDropDown() }
         etType.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {

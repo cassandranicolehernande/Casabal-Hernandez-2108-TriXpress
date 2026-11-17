@@ -37,9 +37,13 @@ class SearchDropoffActivity : AppCompatActivity() {
         val etPickup = findViewById<AutoCompleteTextView>(R.id.etSearchPickup)
         val etDropoff = findViewById<AutoCompleteTextView>(R.id.etSearchDropoff)
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, nasugbuLandmarks)
+        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, nasugbuLandmarks)
         etPickup.setAdapter(adapter)
         etDropoff.setAdapter(adapter)
+
+        // Custom glassmorphism dropdown background with oval-rectangle & yellow stroke
+        etPickup.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
+        etDropoff.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
 
         // Pre-fill default pickup if passed
         val defaultPickup = intent.getStringExtra("PICKUP_LOCATION") ?: "BatStateU ARASOF Campus, Nasugbu"
@@ -83,11 +87,9 @@ class SearchDropoffActivity : AppCompatActivity() {
     }
 
     private fun startLookingForDriverSequence(pickup: String, dropoff: String, serviceType: String, mode: String) {
-        val dialogView = layoutInflater.inflate(android.R.layout.simple_list_item_1, null)
-        val textView = dialogView.findViewById<TextView>(android.R.id.text1)
-        textView.text = "Searching for nearby $serviceType drivers..."
-        textView.textSize = 18f
-        textView.gravity = android.view.Gravity.CENTER
+        val dialogView = layoutInflater.inflate(R.layout.dialog_searching_driver, null)
+        val tvStatus = dialogView.findViewById<TextView>(R.id.tvSearchStatus)
+        val tvSub = dialogView.findViewById<TextView>(R.id.tvSearchSub)
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -97,12 +99,19 @@ class SearchDropoffActivity : AppCompatActivity() {
 
         val handler = Handler(Looper.getMainLooper())
 
-        handler.postDelayed({ textView.text = "Checking TODA service zones..." }, 2000)
-        handler.postDelayed({ textView.text = "Calculating optimal route..." }, 4000)
-        handler.postDelayed({ textView.text = "Malapit na tayka..." }, 6000)
+        handler.postDelayed({
+            tvStatus.text = "Checking TODA Service Zones..."
+            tvSub.text = "Connecting to nearest tricycle drivers..."
+        }, 2000)
 
         handler.postDelayed({
-            textView.text = "Driver Found! Assigning Kuya Roberto"
+            tvStatus.text = "Calculating optimal route..."
+            tvSub.text = "Estimated fare & route mapped via Google Maps."
+        }, 4500)
+
+        handler.postDelayed({
+            tvStatus.text = "Driver Found! Assigning Kuya Roberto"
+            tvSub.text = "Kuya Roberto (ARASOF TODA) accepted your trip."
             handler.postDelayed({
                 dialog.dismiss()
                 val intent = Intent(this, TrackingActivity::class.java).apply {
@@ -115,7 +124,7 @@ class SearchDropoffActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
                 finish()
-            }, 1500)
-        }, 8000)
+            }, 1200)
+        }, 7000)
     }
 }

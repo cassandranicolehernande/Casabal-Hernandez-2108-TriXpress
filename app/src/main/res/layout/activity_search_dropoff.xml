@@ -1,88 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="@drawable/bg_main_gradient"
+    android:fillViewport="true">
 
-    <!-- Top Blue Area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#4AA6EB"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
 
-        <!-- Pickup Input with AutoComplete -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_card_top_rounded"
-            android:backgroundTint="#33FFFFFF"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="12dp"
-            android:layout_marginBottom="12dp">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/presence_online"
-                app:tint="#FFFFFF"
-                android:contentDescription="Pickup Icon" />
-            <AutoCompleteTextView
-                android:id="@+id/etSearchPickup"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="Type exact pick-up address..."
-                android:textColorHint="#CCFFFFFF"
-                android:textColor="#FFFFFF"
-                android:completionThreshold="1"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📍 Book Your TriXpress Ride"
+            android:textColor="#FFC107"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal" />
 
-        <!-- Drop-off Input with AutoComplete -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/bg_card_top_rounded"
-            android:backgroundTint="#33FFFFFF"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="12dp">
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@android:drawable/ic_menu_mylocation"
-                app:tint="#FFFFFF"
-                android:contentDescription="Dropoff Icon" />
-            <AutoCompleteTextView
-                android:id="@+id/etSearchDropoff"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:hint="Type exact drop-off address..."
-                android:textColorHint="#CCFFFFFF"
-                android:textColor="#FFFFFF"
-                android:completionThreshold="1"
-                android:layout_marginStart="8dp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Body (Service & Ride Options) -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
+        <!-- Glassmorphism Container for Inputs -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:elevation="8dp"
+            android:layout_marginBottom="20dp">
 
-            <!-- Choose Service Type (Angkas-style) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick-up Location"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Pickup Input with AutoComplete -->
+            <AutoCompleteTextView
+                android:id="@+id/etSearchPickup"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Type exact pick-up address..."
+                android:textColorHint="@color/text_hint"
+                android:textColor="#000000"
+                android:completionThreshold="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Drop-off Destination"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Drop-off Input with AutoComplete -->
+            <AutoCompleteTextView
+                android:id="@+id/etSearchDropoff"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Type exact drop-off address..."
+                android:textColorHint="@color/text_hint"
+                android:textColor="#000000"
+                android:completionThreshold="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp" />
+
+        </LinearLayout>
+
+        <!-- Glassmorphism Container for Options -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:elevation="8dp"
+            android:layout_marginBottom="24dp">
+
+            <!-- Choose Service Type -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,7 +100,7 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#1A237E"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="12dp"/>
 
             <RadioGroup
                 android:id="@+id/rgServiceType"
@@ -105,25 +115,25 @@
                     android:layout_height="wrap_content"
                     android:checked="true"
                     android:text="🛺 Tricycle Ride (Standard Passenger)"
-                    android:textColor="#333333"
+                    android:textColor="#000000"
                     android:textSize="14sp"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="8dp"/>
 
                 <RadioButton
                     android:id="@+id/rbServiceDelivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="📦 Express Parcel / Pasalubong Delivery"
-                    android:textColor="#333333"
+                    android:textColor="#000000"
                     android:textSize="14sp"
-                    android:layout_marginBottom="4dp"/>
+                    android:layout_marginBottom="8dp"/>
 
                 <RadioButton
                     android:id="@+id/rbServicePakyaw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="👑 Pakyaw Charter (Whole Unit)"
-                    android:textColor="#333333"
+                    android:textColor="#000000"
                     android:textSize="14sp"/>
             </RadioGroup>
 
@@ -135,20 +145,20 @@
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="#1A237E"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="12dp"/>
 
             <RadioGroup
                 android:id="@+id/rgRideMode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+                android:orientation="horizontal">
 
                 <RadioButton
                     android:id="@+id/rbPasabay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Pasabay lang po!"
+                    android:textColor="#000000"
                     android:checked="true"
                     android:layout_marginEnd="16dp"/>
 
@@ -156,21 +166,23 @@
                     android:id="@+id/rbKasya"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="#000000"
                     android:text="Kasya kami riyan!"/>
             </RadioGroup>
 
-            <!-- Confirm Button -->
-            <Button
-                android:id="@+id/btnConfirmBooking"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="Book TriXpress Now"
-                android:backgroundTint="#FFC107"
-                android:textColor="#1A237E"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:cornerRadius="12dp" />
-
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <!-- Confirm Button (Yellow Glass Pill Button) -->
+        <android.widget.Button
+            android:id="@+id/btnConfirmBooking"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@drawable/bg_btn_yellow"
+            android:text="Book TriXpress Now"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp" />
+
+    </LinearLayout>
+</ScrollView>

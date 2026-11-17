@@ -17,39 +17,116 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <!-- Menu Button (Top Left) -->
-        <ImageView
-            android:id="@+id/btnOpenDrawer"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
-            app:tint="#333333"
-            android:background="@drawable/bg_card_top_rounded"
-            android:backgroundTint="#FFFFFF"
-            android:elevation="4dp"
-            android:padding="8dp"
+        <!-- Top Floating Search Pill Card (Google Maps / Angkas Style) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTopSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <!-- Center Location Pin -->
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@android:drawable/ic_menu_mylocation"
-            app:tint="#1A237E"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="#FFFFFF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="40dp" /> <!-- Offset so tip is centered -->
+            app:layout_constraintTop_toTopOf="parent">
 
-        <!-- Floating Bottom Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="12dp">
+
+                <!-- Menu Drawer Button -->
+                <ImageView
+                    android:id="@+id/btnOpenDrawer"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:src="@android:drawable/ic_menu_sort_by_size"
+                    app:tint="#333333"
+                    android:padding="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="Menu" />
+
+                <!-- Search / Where to? text container -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="4dp">
+                        <View
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:background="@drawable/bg_btn_yellow" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your location (ARASOF Campus)"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#333333"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E0E0E0"
+                        android:layout_marginVertical="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@android:drawable/presence_busy"
+                            app:tint="#D32F2F"
+                            android:contentDescription="Drop" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Where to? Tap to search destination..."
+                            android:textSize="13sp"
+                            android:textColor="#777777"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Map Type Floating Action Button (Top Right under search card) -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMapLayer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:src="@android:drawable/ic_menu_mapmode"
+            app:backgroundTint="#FFFFFF"
+            app:tint="#1A237E"
+            app:fabSize="mini"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardTopSearch"
+            android:contentDescription="Map Layer" />
+
+        <!-- Floating Bottom Card (Angkas Style) -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="8dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="12dp"
+            app:cardBackgroundColor="#1A237E"
             android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -57,34 +134,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pickup Location"
-                    android:textSize="14sp"
-                    android:textColor="#777777" />
+                    android:text="🛺 TriXpress Ride Hailing"
+                    android:textSize="13sp"
+                    android:textColor="#FFC107"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp" />
 
                 <TextView
-                    android:id="@+id/tvCurrentPickup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nasugbu, Batangas, Philippines"
+                    android:text="Nasugbu TODA Network Active"
                     android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:textColor="#333333"
-                    android:layout_marginTop="4dp" />
+                    android:textSize="20sp"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginBottom="16dp" />
 
                 <Button
                     android:id="@+id/btnChoosePickup"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:layout_marginTop="16dp"
-                    android:text="Choose This Pickup"
-                    android:backgroundTint="#4AA6EB"
-                    android:textColor="#FFFFFF"
+                    android:text="Book Ride &amp; Type Address"
+                    android:backgroundTint="#FFC107"
+                    android:textColor="#000000"
                     android:textStyle="bold"
+                    android:textSize="16sp"
                     app:cornerRadius="28dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

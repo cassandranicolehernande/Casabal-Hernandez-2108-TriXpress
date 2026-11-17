@@ -14,29 +14,35 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Pickup Indicator -->
+        <!-- Pickup Input with AutoComplete -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_card_top_rounded"
+            android:backgroundTint="#33FFFFFF"
             android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:paddingHorizontal="12dp"
             android:layout_marginBottom="12dp">
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@android:drawable/presence_online"
-                app:tint="#FFFFFF" />
-            <TextView
-                android:id="@+id/tvSearchPickup"
-                android:layout_width="wrap_content"
+                app:tint="#FFFFFF"
+                android:contentDescription="Pickup Icon" />
+            <AutoCompleteTextView
+                android:id="@+id/etSearchPickup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nasugbu, Batangas, Philippines"
+                android:background="@android:color/transparent"
+                android:hint="Type exact pick-up address..."
+                android:textColorHint="#CCFFFFFF"
                 android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:layout_marginStart="12dp"/>
+                android:completionThreshold="1"
+                android:layout_marginStart="8dp"/>
         </LinearLayout>
 
-        <!-- Drop-off Input -->
+        <!-- Drop-off Input with AutoComplete -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -45,21 +51,21 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:paddingHorizontal="12dp">
-
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@android:drawable/ic_menu_mylocation"
-                app:tint="#FFFFFF" />
-
-            <EditText
+                app:tint="#FFFFFF"
+                android:contentDescription="Dropoff Icon" />
+            <AutoCompleteTextView
                 android:id="@+id/etSearchDropoff"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:hint="Choose drop-off on map or type..."
+                android:hint="Type exact drop-off address..."
                 android:textColorHint="#CCFFFFFF"
                 android:textColor="#FFFFFF"
+                android:completionThreshold="1"
                 android:layout_marginStart="8dp"/>
         </LinearLayout>
     </LinearLayout>

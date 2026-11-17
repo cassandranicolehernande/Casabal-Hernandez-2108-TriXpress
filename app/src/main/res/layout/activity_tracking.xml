@@ -1,101 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#1A237E">
 
     <!-- Map View Fragment -->
     <fragment
         android:id="@+id/trackingMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/bottomCard"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Status Overlay -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Top Status Overlay Card (Glassmorphism Blue & Yellow) -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="#DD111111"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ride In Progress"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvTrackingDriver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Driver: Kuya Mario (Bunducan TODA)"
-            android:textColor="#CCCCCC"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <!-- Bottom Tracking Bottom Sheet Card -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:background="@android:color/white"
-        android:padding="20dp"
-        android:elevation="8dp">
+        android:layout_margin="16dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#CC1A237E"
+        app:strokeWidth="1.5dp"
+        app:strokeColor="#80FFC107"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:id="@+id/tvTripStatusTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Live Tracking"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111" />
-
-                <TextView
-                    android:id="@+id/tvEstimatedTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Estimated Arrival: 15 mins"
-                    android:textSize="13sp"
-                    android:textColor="#777777" />
-            </LinearLayout>
-
-            <!-- SOS Button -->
-            <Button
-                android:id="@+id/btnSos"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="H"
+                android:text="🛺 Driver Arriving at Pick-up"
+                android:textColor="#FFC107"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@android:color/white"
-                android:backgroundTint="#D32F2F" />
-        </LinearLayout>
+                android:layout_marginBottom="4dp" />
 
-        <Button
-            android:id="@+id/btnCompleteTrip"
+            <TextView
+                android:id="@+id/tvTrackingDriver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Driver: Kuya Roberto (ARASOF TODA)\nPlate: AB-1234 • 4.9★"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Map Type Toggle Floating Action Button -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabTrackingMapLayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="110dp"
+        android:src="@android:drawable/ic_menu_mapmode"
+        app:backgroundTint="#FFC107"
+        app:tint="#1A237E"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="Map Layer" />
+
+    <!-- Bottom Tracking Bottom Sheet Card (Glassmorphism Oval-Rectangle) -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/bottomCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="16dp"
+        app:cardBackgroundColor="#E61A237E"
+        app:strokeWidth="1.5dp"
+        app:strokeColor="#80FFC107"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Complete Trip &amp; View Receipt"
-            android:backgroundTint="#111111"
-            android:textColor="@android:color/white"
-            android:padding="12dp" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
-</RelativeLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvTrackingInstruction"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Driver is on the way to pick-up point"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFC107" />
+
+                    <TextView
+                        android:id="@+id/tvEstimatedTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estimated Arrival: 2 mins"
+                        android:textSize="14sp"
+                        android:textColor="#E0E0E0"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
+
+                <!-- SOS Button (Pill/Oval) -->
+                <Button
+                    android:id="@+id/btnSos"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:text="🚨"
+                    android:textSize="18sp"
+                    android:background="@drawable/bg_btn_yellow"
+                    android:backgroundTint="#D32F2F" />
+            </LinearLayout>
+
+            <!-- Action Button: Confirm Arrival / Start Trip / Complete Trip (Pill Shape) -->
+            <android.widget.Button
+                android:id="@+id/btnActionTrip"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_btn_yellow"
+                android:text="Confirm Driver Arrived &amp; Start Trip"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

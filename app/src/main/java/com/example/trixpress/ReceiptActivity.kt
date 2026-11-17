@@ -34,7 +34,8 @@ class ReceiptActivity : AppCompatActivity() {
         tvReceiptFare?.text = fare
 
         btnRateDriver?.setOnClickListener {
-            Toast.makeText(this, "Thank you for rating your trip!", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, RatingActivity::class.java)
+            startActivity(intent)
         }
 
         btnBackToDashboard?.setOnClickListener {

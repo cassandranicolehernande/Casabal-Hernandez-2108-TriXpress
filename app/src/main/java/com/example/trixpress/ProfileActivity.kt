@@ -17,34 +17,53 @@ class ProfileActivity : AppCompatActivity() {
         val tvProfileContact = findViewById<TextView?>(R.id.tvProfileContact)
         val tvProfileZone = findViewById<TextView?>(R.id.tvProfileZone)
 
+        // Additional labels in the layout if needed or dynamically updated
         val btnEditProfile = findViewById<Button?>(R.id.btnEditProfile)
         val btnTripHistory = findViewById<Button?>(R.id.btnTripHistory)
         val btnLogout = findViewById<Button?>(R.id.btnLogout)
 
-        // --- IDagdag ang mga ito: Bottom Navigation Buttons ---
         val btnNavDashboard = findViewById<Button?>(R.id.btnNavDashboard)
         val btnNavExplore = findViewById<Button?>(R.id.btnNavExplore)
         val btnNavHistory = findViewById<Button?>(R.id.btnNavHistory)
 
-        // Kunin ang mga in-input at ipinasa mula sa PassengerRegistrationActivity
-        val name = intent.getStringExtra("USER_NAME") ?: "Nasugbu Passenger"
-        val phone = intent.getStringExtra("USER_PHONE") ?: "+63 912 345 6789"
-        val age = intent.getStringExtra("USER_AGE") ?: ""
-        val address = intent.getStringExtra("USER_ADDRESS") ?: "ARASOF Campus / Town Proper Zone"
-        val email = intent.getStringExtra("USER_EMAIL") ?: ""
+        // Check if user is a Driver or Passenger
+        val isDriver = intent.getBooleanExtra("IS_DRIVER", false) || (intent.getStringExtra("USER_ROLE") == "DRIVER")
 
-        // I-display ang totoong impormasyon sa mga TextViews
-        tvProfileName?.text = name
-        tvProfileContact?.text = if (email.isNotEmpty()) "$phone | $email" else phone
-        tvProfileZone?.text = if (age.isNotEmpty()) "$address (Age: $age)" else address
+        if (isDriver) {
+            // Driver Profile Info
+            val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (Driver)"
+            val license = intent.getStringExtra("DRIVER_LICENSE") ?: "N12-34-567890"
+            val toda = intent.getStringExtra("DRIVER_TODA") ?: "ARASOF Campus TODA"
+            val plate = intent.getStringExtra("DRIVER_PLATE") ?: "AB-1234"
+            val type = intent.getStringExtra("TRICYCLE_TYPE") ?: "Honda Tricycle"
+
+            tvProfileName?.text = "🛺 $driverName"
+            tvProfileContact?.text = "License: $license | Plate: $plate"
+            tvProfileZone?.text = "TODA: $toda\nVehicle: $type"
+            btnTripHistory?.text = "View Driver Earnings"
+        } else {
+            // Passenger Profile Info
+            val name = intent.getStringExtra("USER_NAME") ?: "Passenger User"
+            val phone = intent.getStringExtra("USER_PHONE") ?: "+63 912 345 6789"
+            val address = intent.getStringExtra("USER_ADDRESS") ?: "Nasugbu, Batangas (Zone 1)"
+
+            tvProfileName?.text = "👤 $name"
+            tvProfileContact?.text = "Contact: $phone"
+            tvProfileZone?.text = "Address / Zone: $address"
+            btnTripHistory?.text = "View Recent Bookings"
+        }
 
         btnEditProfile?.setOnClickListener {
             Toast.makeText(this, "Edit profile feature selected", Toast.LENGTH_SHORT).show()
         }
 
         btnTripHistory?.setOnClickListener {
-            val intent = Intent(this, TripHistoryActivity::class.java)
-            startActivity(intent)
+            if (isDriver) {
+                Toast.makeText(this, "Total Earnings Today: ₱450.00 (8 Completed Trips)", Toast.LENGTH_LONG).show()
+            } else {
+                val intent = Intent(this, TripHistoryActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         btnLogout?.setOnClickListener {
@@ -55,9 +74,12 @@ class ProfileActivity : AppCompatActivity() {
             finish()
         }
 
-        // --- IDagdag ang mga ito: Click Listeners para sa Bottom Navigation ---
         btnNavDashboard?.setOnClickListener {
-            val intent = Intent(this, PassengerDashboardActivity::class.java)
+            val intent = if (isDriver) {
+                Intent(this, DriverDashboardActivity::class.java)
+            } else {
+                Intent(this, PassengerDashboardActivity::class.java)
+            }
             startActivity(intent)
         }
 

@@ -1,148 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F8F9FA">
+    android:background="@drawable/bg_main_gradient"
+    android:fillViewport="true">
 
-    <!-- Header Title -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Service Zone Management"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#111111"
-        android:gravity="center"
-        android:padding="16dp"
-        android:background="@android:color/white"
-        android:elevation="2dp" />
-
-    <!-- Map View Fragment for Zone Boundary -->
-    <fragment
-        android:id="@+id/adminZoneMap"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="240dp" />
-
-    <!-- Controls Container -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
 
+        <!-- Header Title -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Zone Configuration"
-            android:textSize="14sp"
+            android:text="🗺️ Service Zone Management"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#888888"
+            android:textColor="#FFC107"
+            android:gravity="center"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp" />
 
-        <!-- Switch 1: Zones Boundary -->
+        <!-- Map View Card for Zone Boundary (Glassmorphism) -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:strokeWidth="1.5dp"
+            app:strokeColor="#80FFE082"
+            android:layout_marginBottom="20dp">
+
+            <fragment
+                android:id="@+id/adminZoneMap"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Controls Container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@android:color/white"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp"
-            android:elevation="1dp">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="0dp"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:text="Zone Configuration"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="12dp" />
 
-                <TextView
+            <!-- Switch 1: Zones Boundary (Glassmorphism Card) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:elevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Zones Boundary"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A237E" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active drivers &amp; users per zone"
+                        android:textSize="12sp"
+                        android:textColor="#555555" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchZonesBoundary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Zones Boundary"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Active drivers &amp; users per zone"
-                    android:textSize="12sp"
-                    android:textColor="#777777" />
+                    android:checked="true" />
             </LinearLayout>
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchZonesBoundary"
-                android:layout_width="wrap_content"
+            <!-- Switch 2: Active Availability (Glassmorphism Card) -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:checked="true" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp"
+                android:elevation="4dp">
 
-        <!-- Switch 2: Active Availability -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@android:color/white"
-            android:padding="16dp"
-            android:layout_marginBottom="12dp"
-            android:elevation="1dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Active Availability"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A237E" />
 
-            <TextView
-                android:layout_width="0dp"
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchActiveAvailability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- Switch 3: Zone Availability (Glassmorphism Card) -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Active Availability"
-                android:textSize="15sp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_glass_card"
+                android:padding="16dp"
+                android:layout_marginBottom="24dp"
+                android:elevation="4dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Zone Availability"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A237E" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchZoneAvailability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <android.widget.Button
+                android:id="@+id/btnBackFromZones"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="@drawable/bg_btn_yellow"
+                android:text="Back to Dashboard"
+                android:textColor="#000000"
                 android:textStyle="bold"
-                android:textColor="#111111" />
+                android:textSize="16sp" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchActiveAvailability"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true" />
         </LinearLayout>
-
-        <!-- Switch 3: Zone Availability -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:background="@android:color/white"
-            android:padding="16dp"
-            android:layout_marginBottom="24dp"
-            android:elevation="1dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Zone Availability"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#111111" />
-
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switchZoneAvailability"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:checked="true" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/btnBackFromZones"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Back to Dashboard"
-            android:backgroundTint="#444444"
-            android:textColor="@android:color/white"
-            android:padding="12dp" />
-
     </LinearLayout>
-</LinearLayout>
+</ScrollView>

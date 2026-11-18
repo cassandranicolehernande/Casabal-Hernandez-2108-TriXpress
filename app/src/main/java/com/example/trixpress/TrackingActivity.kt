@@ -142,31 +142,34 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val runnable = object : Runnable {
             override fun run() {
-                if (waypointIndex < roadWaypoints.size - 1) {
-                    val startPoint = roadWaypoints[waypointIndex]
-                    val endPoint = roadWaypoints[waypointIndex + 1]
+                // Ensure activity and map are still valid before updating UI
+                if (!isFinishing && ::mMap.isInitialized) {
+                    if (waypointIndex < roadWaypoints.size - 1) {
+                        val startPoint = roadWaypoints[waypointIndex]
+                        val endPoint = roadWaypoints[waypointIndex + 1]
 
-                    val currentLat = startPoint.latitude + (endPoint.latitude - startPoint.latitude) * (subStep.toFloat() / totalSubStepsPerSegment)
-                    val currentLng = startPoint.longitude + (endPoint.longitude - startPoint.longitude) * (subStep.toFloat() / totalSubStepsPerSegment)
-                    val newPos = LatLng(currentLat, currentLng)
+                        val currentLat = startPoint.latitude + (endPoint.latitude - startPoint.latitude) * (subStep.toFloat() / totalSubStepsPerSegment)
+                        val currentLng = startPoint.longitude + (endPoint.longitude - startPoint.longitude) * (subStep.toFloat() / totalSubStepsPerSegment)
+                        val newPos = LatLng(currentLat, currentLng)
 
-                    driverMarker?.position = newPos
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(newPos))
+                        driverMarker?.position = newPos
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(newPos))
 
-                    val remainingMins = Math.max(1, 4 - waypointIndex)
-                    findViewById<TextView>(R.id.tvEstimatedTime).text = "Estimated Arrival: $remainingMins min(s) away"
+                        val remainingMins = Math.max(1, 4 - waypointIndex)
+                        findViewById<TextView>(R.id.tvEstimatedTime).text = "Estimated Arrival: $remainingMins min(s) away"
 
-                    subStep++
-                    if (subStep > totalSubStepsPerSegment) {
-                        subStep = 0
-                        waypointIndex++
+                        subStep++
+                        if (subStep > totalSubStepsPerSegment) {
+                            subStep = 0
+                            waypointIndex++
+                        }
+
+                        handler.postDelayed(this, 2000)
+                    } else {
+                        driverMarker?.position = destinationLocation
+                        findViewById<TextView>(R.id.tvEstimatedTime).text = "Arrived at drop-off destination!"
+                        Toast.makeText(this@TrackingActivity, "You have arrived at your destination!", Toast.LENGTH_LONG).show()
                     }
-
-                    handler.postDelayed(this, 2000)
-                } else {
-                    driverMarker?.position = destinationLocation
-                    findViewById<TextView>(R.id.tvEstimatedTime).text = "Arrived at drop-off destination!"
-                    Toast.makeText(this@TrackingActivity, "You have arrived at your destination!", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -175,6 +178,6 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
+        handler.removeCallbacksAndMessages(null) // Prevent memory leaks
     }
 }

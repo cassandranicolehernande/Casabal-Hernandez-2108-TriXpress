@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.TriXpress" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Force clean modern Sans-Serif font globally across all text views -->
+        <item name="android:textViewStyle">@style/TriXpress.TextView</item>
+    </style>
+
+    <style name="TriXpress.TextView" parent="android:Widget.TextView">
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="Theme.TriXpress" parent="Base.Theme.TriXpress" />

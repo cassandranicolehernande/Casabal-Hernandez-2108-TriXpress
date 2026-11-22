@@ -136,17 +136,15 @@ class DriverRegistrationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Registration Submitted! Reviewing by Admin...", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Registration Successful! Welcome to TriXpress Driver Portal.", Toast.LENGTH_LONG).show()
 
             // Build full name including middle name (if present)
             val fullName = listOf(firstName, middleName, lastName)
                 .filter { it.isNotBlank() }
                 .joinToString(" ")
 
-            val intent = Intent(this, DriverPendingApprovalActivity::class.java).apply {
+            val intent = Intent(this, DriverDashboardActivity::class.java).apply {
                 putExtra("DRIVER_NAME", fullName)
-                putExtra("UNITS_COUNT", tricycleUnitsList.size)
-                putExtra("DRIVER_PHOTO_URI", currentDriverPhotoUri.toString())
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)

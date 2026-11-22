@@ -1,5 +1,6 @@
 package com.example.trixpress
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -28,11 +29,24 @@ class PassengerRegistrationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            Toast.makeText(this, "Registration Complete!", Toast.LENGTH_SHORT).show()
+            val fullName = "$firstName $lastName"
 
-            // Go directly to the Passenger Dashboard (Map)
+            // Save passenger account locally in SharedPreferences
+            val prefs = getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
+            prefs.edit().apply {
+                putBoolean("IS_LOGGED_IN", true)
+                putString("USER_ROLE", "PASSENGER")
+                putString("USER_NAME", fullName)
+                putString("USER_PHONE", contact)
+                putString("USER_ADDRESS", "Nasugbu, Batangas (Zone 1)")
+                apply()
+            }
+
+            Toast.makeText(this, "Account Saved & Registration Complete!", Toast.LENGTH_SHORT).show()
+
             val intent = Intent(this, PassengerDashboardActivity::class.java).apply {
-                putExtra("USER_NAME", "$firstName $lastName")
+                putExtra("USER_NAME", fullName)
+                putExtra("USER_PHONE", contact)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)

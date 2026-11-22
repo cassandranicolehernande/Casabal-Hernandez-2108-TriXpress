@@ -114,7 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="🛺 Tricycle Ride (Standard Passenger)"
+                    android:text="🛺 Indiviual Ride "
                     android:textColor="#000000"
                     android:textSize="14sp"
                     android:layout_marginBottom="8dp"/>
@@ -123,7 +123,7 @@
                     android:id="@+id/rbServiceDelivery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📦 Express Parcel / Pasalubong Delivery"
+                    android:text="📦 Xpress Parcel / Pasalubong Delivery"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     android:layout_marginBottom="8dp"/>
@@ -132,7 +132,7 @@
                     android:id="@+id/rbServicePakyaw"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="👑 Pakyaw Charter (Whole Unit)"
+                    android:text="👑 Group Pakyaw"
                     android:textColor="#000000"
                     android:textSize="14sp"/>
             </RadioGroup>
@@ -154,23 +154,36 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/rbPasabay"
+                    android:id="@+id/rbPassenger"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pasabay lang po!"
+                    android:text="Individual Passenger"
                     android:textColor="#000000"
                     android:checked="true"
                     android:layout_marginEnd="16dp"/>
 
                 <RadioButton
-                    android:id="@+id/rbKasya"
+                    android:id="@+id/rbGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#000000"
-                    android:text="Kasya kami riyan!"/>
+                    android:text="Group"/>
             </RadioGroup>
 
         </LinearLayout>
+
+        <!-- Search in Google Maps Button -->
+        <android.widget.Button
+            android:id="@+id/btnSearchInGoogleMaps"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_btn_yellow"
+            android:backgroundTint="#CC1A237E"
+            android:text="🗺️ Search on Google Maps App"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Confirm Button (Yellow Glass Pill Button) -->
         <android.widget.Button
@@ -178,7 +191,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:background="@drawable/bg_btn_yellow"
-            android:text="Book TriXpress Now"
+            android:text="🚗Book TriXpress Now"
             android:textColor="#000000"
             android:textStyle="bold"
             android:textSize="16sp"

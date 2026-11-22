@@ -1,4 +1,3 @@
-
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
@@ -41,9 +40,14 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.core.ktx)
     implementation(libs.material)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 
-    // Google Maps
+    // Google Maps & Routing Utilities
     implementation("com.google.android.gms:play-services-maps:18.2.0")
+    implementation("com.google.maps.android:android-maps-utils:3.8.2")
+
+    // Networking (for Google Directions API)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:35.2.0"))

@@ -59,8 +59,7 @@ class PassengerDashboardActivity : AppCompatActivity(), OnMapReadyCallback {
         val fabMapLayer = findViewById<FloatingActionButton>(R.id.fabMapLayer)
 
         val openSearchIntent = {
-            val intent = Intent(this, SearchDropoffActivity::class.java)
-            intent.putExtra("PICKUP_LOCATION", "BatStateU ARASOF Campus, Nasugbu")
+            val intent = Intent(this, MapPickerActivity::class.java)
             startActivity(intent)
         }
 

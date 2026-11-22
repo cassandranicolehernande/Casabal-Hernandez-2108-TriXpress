@@ -58,7 +58,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Map Type Toggle Floating Action Button -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabTrackingMapLayer"
         android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="Map Layer" />
 
-    <!-- Bottom Tracking Bottom Sheet Card (Glassmorphism Oval-Rectangle) -->
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomCard"
         android:layout_width="match_parent"
@@ -119,7 +119,7 @@
                         android:id="@+id/tvEstimatedTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Estimated Arrival: 2 mins"
+                        android:text="Estimated Time of Arrival: 2 mins"
                         android:textSize="14sp"
                         android:textColor="#E0E0E0"
                         android:layout_marginTop="4dp" />
@@ -130,13 +130,25 @@
                     android:id="@+id/btnSos"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:text="🚨"
+                    android:text=" 🚨"
                     android:textSize="18sp"
                     android:background="@drawable/bg_btn_yellow"
                     android:backgroundTint="#D32F2F" />
             </LinearLayout>
 
-            <!-- Action Button: Confirm Arrival / Start Trip / Complete Trip (Pill Shape) -->
+            <!-- Button to open official native Google Maps app directly -->
+            <android.widget.Button
+                android:id="@+id/btnOpenGoogleMapsApp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_btn_yellow"
+                android:text="🗺️Use Google Maps App"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+
             <android.widget.Button
                 android:id="@+id/btnActionTrip"
                 android:layout_width="match_parent"

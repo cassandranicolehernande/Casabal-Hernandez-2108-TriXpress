@@ -19,40 +19,43 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.osmdroid.util.GeoPoint
 import java.util.Locale
 
 class SearchDropoffActivity : AppCompatActivity() {
 
     private val nasugbuLandmarks = arrayOf(
-        "BatStateU ARASOF Campus, Nasugbu",
-        "Nasugbu Public Market, Town Proper",
-        "Nasugbu Municipal Hall",
-        "Jollibee Nasugbu Crossing",
-        "St. Francis of Assisi Parish Church",
-        "Barangay 1, Town Proper, Nasugbu",
-        "Barangay 2, Wawa, Nasugbu",
-        "Barangay 3, Bucana, Nasugbu",
-        "Barangay 4, Talangan, Nasugbu",
-        "Barangay 5, Putat, Nasugbu",
-        "Barangay 6, Kaylaway, Nasugbu",
-        "Barangay 7, Pantalan, Nasugbu",
-        "Barangay 8, Natipuan, Nasugbu",
-        "Barangay 9, Looc, Nasugbu",
-        "Barangay 10, Bulihan, Nasugbu",
-        "Barangay 11, Malapad na Bato, Nasugbu",
-        "Calayo Beach Resort, Nasugbu",
-        "Natipuan Beach, Nasugbu",
-        "Wawa Port, Nasugbu",
+        "BatStateU ARASOF - Nasugbu Campus",
+        "Nasugbu East Central School",
+        "Nasugbu West Central School",
         "Bunducan Elementary School",
-        "Cala de Mar / Peninsula, Nasugbu",
-        "Hamilo Coast / Pico de Loro",
+        "Looc National High School",
+        "Nasugbu Municipal Hall",
+        "Nasugbu Town Plaza",
+        "St. Francis Xavier Parish Church",
+        "Nasugbu Police & Fire Station",
+        "Nasugbu Public Market",
+        "Jollibee Nasugbu Crossing",
+        "Waltermart Nasugbu",
+        "Savemore Market Nasugbu",
+        "Nasugbu Grand Bus & Van Terminal",
+        "Apacible Memorial District Hospital (Lumbangan)",
+        "Wawa Port / Nasugbu Fish Port",
+        "Bucana Beach / Nasugbu Baywalk",
+        "Apacible Blvd / White Beach",
+        "Natipuan Beach",
+        "Terrazas / Peninsula de Punta Fuego",
+        "Tali Beach (Balaytigui)",
+        "Calayo Beach Resort",
+        "Pico de Loro Cove / Hamilo Coast",
+        "Central Azucarera Don Pedro (CADPI)",
         "Ternate-Nasugbu Highway Junction",
-        "Magallanes - Nasugbu Road",
-        "East-West Road View Deck, Nasugbu"
+        "Kaybiang Tunnel Boundary",
+        "East-West Road View Deck (Kaylaway)",
+        "Caleruega / Tagaytay-Nasugbu Border"
     )
 
     private lateinit var etPickup: AutoCompleteTextView
@@ -74,6 +77,8 @@ class SearchDropoffActivity : AppCompatActivity() {
     private var selectedTip = 0.0
     private var isPhotoAttached = false
 
+    private var currentGpsLatLng = LatLng(14.0673, 120.6262) // Default BatStateU ARASOF fallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_dropoff)
@@ -93,12 +98,31 @@ class SearchDropoffActivity : AppCompatActivity() {
         tvPhotoStatus = findViewById(R.id.tvPhotoStatus)
         rgServiceType = findViewById(R.id.rgServiceType)
 
-        // Frequent Places Chips
-        findViewById<Button>(R.id.chipHome).setOnClickListener { etDropoff.setText("Barangay 1, Town Proper, Nasugbu", false) }
-        findViewById<Button>(R.id.chipCampus).setOnClickListener { etDropoff.setText("BatStateU ARASOF Campus, Nasugbu", false) }
-        findViewById<Button>(R.id.chipMarket).setOnClickListener { etDropoff.setText("Nasugbu Public Market, Town Proper", false) }
-        findViewById<Button>(R.id.chipWawa).setOnClickListener { etDropoff.setText("Wawa Port, Nasugbu", false) }
-        findViewById<Button>(R.id.chipCalayo).setOnClickListener { etDropoff.setText("Calayo Beach Resort, Nasugbu", false) }
+        // Automatically fetch live GPS location as pickup on startup
+        etPickup.isEnabled = false
+        etPickup.setText("📍 BatStateU ARASOF - Nasugbu Campus (GPS)", false)
+
+        try {
+            val fusedClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedClient.lastLocation.addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    currentGpsLatLng = LatLng(location.latitude, location.longitude)
+                    lifecycleScope.launch {
+                        val addressName = getAddressNameFromLatLng(currentGpsLatLng)
+                        etPickup.setText(addressName, false)
+                    }
+                }
+            }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+
+        // Frequent Places Chips for Drop-off
+        findViewById<Button>(R.id.chipHome).setOnClickListener { etDropoff.setText("Nasugbu Town Plaza", false) }
+        findViewById<Button>(R.id.chipCampus).setOnClickListener { etDropoff.setText("BatStateU ARASOF - Nasugbu Campus", false) }
+        findViewById<Button>(R.id.chipMarket).setOnClickListener { etDropoff.setText("Nasugbu Public Market", false) }
+        findViewById<Button>(R.id.chipWawa).setOnClickListener { etDropoff.setText("Wawa Port / Nasugbu Fish Port", false) }
+        findViewById<Button>(R.id.chipCalayo).setOnClickListener { etDropoff.setText("Calayo Beach Resort", false) }
 
         // Quick Message Chips for Driver ("Pakibilis po!", etc.)
         findViewById<Button>(R.id.chipFast).setOnClickListener { etDriverNotes.setText("Pakibilis po, medyo nagmamadali ako!") }
@@ -162,52 +186,18 @@ class SearchDropoffActivity : AppCompatActivity() {
         cbUmbrella.setOnCheckedChangeListener { _, _ -> recalculateTotalFare() }
         cbInsurance.setOnCheckedChangeListener { _, _ -> recalculateTotalFare() }
 
-        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, nasugbuLandmarks)
-        etPickup.setAdapter(adapter)
+        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, NasugbuLocations.allPlaceNames)
         etDropoff.setAdapter(adapter)
-
-        etPickup.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
         etDropoff.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
 
-        // Fetch real-time device GPS location for pickup automatically
-        val defaultPickup = intent.getStringExtra("PICKUP_LOCATION")
-        if (defaultPickup.isNullOrBlank()) {
-            try {
-                val fusedClient = LocationServices.getFusedLocationProviderClient(this)
-                fusedClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    if (location != null) {
-                        lifecycleScope.launch {
-                            val addressName = getAddressNameFromGeoPoint(GeoPoint(location.latitude, location.longitude))
-                            etPickup.setText(addressName, false)
-                        }
-                    } else {
-                        etPickup.setText("Current Live GPS Location", false)
-                    }
-                }
-            } catch (e: SecurityException) {
-                e.printStackTrace()
-                etPickup.setText("Current Live GPS Location", false)
-            }
-        } else {
-            etPickup.setText(defaultPickup, false)
-        }
-
-        val launchMapPicker = {
-            startActivity(Intent(this, MapPickerActivity::class.java))
-        }
-
-        etPickup.setOnClickListener { launchMapPicker() }
-        etPickup.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) launchMapPicker() }
-
-        etDropoff.setOnClickListener { launchMapPicker() }
-        etDropoff.setOnFocusChangeListener { _, hasFocus -> if (hasFocus) launchMapPicker() }
+        etDropoff.setOnClickListener { etDropoff.showDropDown() }
 
         val rgRideMode = findViewById<RadioGroup>(R.id.rgRideMode)
         val btnConfirmBooking = findViewById<Button>(R.id.btnConfirmBooking)
         val btnSearchInGoogleMaps = findViewById<Button>(R.id.btnSearchInGoogleMaps)
 
         btnSearchInGoogleMaps?.setOnClickListener {
-            val pickup = etPickup.text.toString().trim().ifEmpty { "Current Live GPS Location" }
+            val pickup = etPickup.text.toString().trim()
             val dropoff = etDropoff.text.toString().trim().ifEmpty { "Nasugbu Public Market" }
             val mapsUri = android.net.Uri.parse(
                 "https://www.google.com/maps/dir/?api=1&origin=${android.net.Uri.encode(pickup)}&destination=${android.net.Uri.encode(dropoff)}&travelmode=driving"
@@ -225,13 +215,8 @@ class SearchDropoffActivity : AppCompatActivity() {
             val notes = etDriverNotes.text.toString().trim()
             val parcelDesc = etParcelDescription.text.toString().trim()
 
-            if (pickup.isEmpty()) {
-                Toast.makeText(this, "Please enter or pick your pick-up address", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
             if (dropoff.isEmpty()) {
-                Toast.makeText(this, "Please enter or pick your drop-off address", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter your drop-off destination", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -264,19 +249,21 @@ class SearchDropoffActivity : AppCompatActivity() {
             val mode = if (rgRideMode.checkedRadioButtonId == R.id.rbGroup) "Group" else "Individual Passenger"
             val totalFare = tvEstimatedFare.text.toString()
 
-            val pickupGeoPoint = getGeoPointForLandmark(pickup)
-            val dropoffGeoPoint = getGeoPointForLandmark(dropoff)
+            val pickupLatLng = currentGpsLatLng
+            val dropoffLatLng = getLatLngForLandmark(dropoff)
 
-            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupGeoPoint, dropoffGeoPoint)
+            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupLatLng, dropoffLatLng)
         }
+
+        recalculateTotalFare()
     }
 
-    private suspend fun getAddressNameFromGeoPoint(geoPoint: GeoPoint): String = withContext(Dispatchers.IO) {
+    private suspend fun getAddressNameFromLatLng(latLng: LatLng): String = withContext(Dispatchers.IO) {
         try {
             @Suppress("DEPRECATION")
             val geocoder = Geocoder(this@SearchDropoffActivity, Locale.getDefault())
             @Suppress("DEPRECATION")
-            val addresses = geocoder.getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             val address = addresses?.firstOrNull()
             if (address != null) {
                 val line = address.getAddressLine(0)
@@ -285,30 +272,11 @@ class SearchDropoffActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return@withContext "Current Live GPS Location (${String.format(Locale.getDefault(), "%.4f", geoPoint.latitude)}, ${String.format(Locale.getDefault(), "%.4f", geoPoint.longitude)})"
+        return@withContext NasugbuLocations.findNearestPlaceName(latLng.latitude, latLng.longitude)
     }
 
-    private fun getGeoPointForLandmark(name: String): GeoPoint {
-        val lower = name.lowercase(Locale.getDefault())
-        return when {
-            lower.contains("arasof") || lower.contains("campus") -> GeoPoint(14.0728, 120.6325)
-            lower.contains("market") || lower.contains("town proper") -> GeoPoint(14.0745, 120.6360)
-            lower.contains("municipal") -> GeoPoint(14.0730, 120.6340)
-            lower.contains("jollibee") -> GeoPoint(14.0715, 120.6330)
-            lower.contains("church") -> GeoPoint(14.0735, 120.6350)
-            lower.contains("wawa") -> GeoPoint(14.0780, 120.6380)
-            lower.contains("calayo") -> GeoPoint(14.0880, 120.6420)
-            lower.contains("natipuan") -> GeoPoint(14.0820, 120.6400)
-            lower.contains("bunducan") -> GeoPoint(14.0755, 120.6360)
-            lower.contains("looc") -> GeoPoint(14.1200, 120.6400)
-            lower.contains("bulihan") -> GeoPoint(14.0850, 120.6420)
-            lower.contains("barangay 1") -> GeoPoint(14.0732, 120.6345)
-            lower.contains("barangay 2") -> GeoPoint(14.0780, 120.6380)
-            lower.contains("barangay 3") -> GeoPoint(14.0689, 120.6295)
-            lower.contains("barangay 4") -> GeoPoint(14.0728, 120.6325)
-            lower.contains("barangay 5") -> GeoPoint(14.0752, 120.6358)
-            else -> GeoPoint(14.0745, 120.6360)
-        }
+    private fun getLatLngForLandmark(name: String): LatLng {
+        return NasugbuLocations.findCoordinatesByName(name)
     }
 
     private fun recalculateTotalFare() {
@@ -333,10 +301,8 @@ class SearchDropoffActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        val pickup = intent.getStringExtra("PICKUP_LOCATION")
         val dropoff = intent.getStringExtra("DROPOFF_LOCATION")
         val fareStr = intent.getStringExtra("EST_FARE")
-        if (!pickup.isNullOrBlank()) etPickup.setText(pickup, false)
         if (!dropoff.isNullOrBlank()) etDropoff.setText(dropoff, false)
         if (!fareStr.isNullOrBlank()) {
             val clean = fareStr.replace("₱", "").trim().toDoubleOrNull()
@@ -354,8 +320,8 @@ class SearchDropoffActivity : AppCompatActivity() {
         mode: String,
         fare: String,
         notes: String,
-        pickupGeoPoint: GeoPoint,
-        dropoffGeoPoint: GeoPoint
+        pickupLatLng: LatLng,
+        dropoffLatLng: LatLng
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_searching_driver, null)
         val tvStatus = dialogView.findViewById<TextView>(R.id.tvSearchStatus)
@@ -388,10 +354,10 @@ class SearchDropoffActivity : AppCompatActivity() {
                     putExtra("DRIVER_NAME", "Kuya Roberto (ARASOF TODA)")
                     putExtra("PICKUP_LOC", pickup)
                     putExtra("DEST_LOC", dropoff)
-                    putExtra("PICKUP_LAT", pickupGeoPoint.latitude)
-                    putExtra("PICKUP_LNG", pickupGeoPoint.longitude)
-                    putExtra("DEST_LAT", dropoffGeoPoint.latitude)
-                    putExtra("DEST_LNG", dropoffGeoPoint.longitude)
+                    putExtra("PICKUP_LAT", pickupLatLng.latitude)
+                    putExtra("PICKUP_LNG", pickupLatLng.longitude)
+                    putExtra("DEST_LAT", dropoffLatLng.latitude)
+                    putExtra("DEST_LNG", dropoffLatLng.longitude)
                     putExtra("SERVICE_TYPE", serviceType)
                     putExtra("BOOKING_MODE", mode)
                     putExtra("EST_FARE", fare)

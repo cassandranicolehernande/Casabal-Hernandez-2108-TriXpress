@@ -1,5 +1,6 @@
 package com.example.trixpress
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -17,7 +18,6 @@ class ProfileActivity : AppCompatActivity() {
         val tvProfileContact = findViewById<TextView?>(R.id.tvProfileContact)
         val tvProfileZone = findViewById<TextView?>(R.id.tvProfileZone)
 
-        // Additional labels in the layout if needed or dynamically updated
         val btnEditProfile = findViewById<Button?>(R.id.btnEditProfile)
         val btnTripHistory = findViewById<Button?>(R.id.btnTripHistory)
         val btnLogout = findViewById<Button?>(R.id.btnLogout)
@@ -26,35 +26,34 @@ class ProfileActivity : AppCompatActivity() {
         val btnNavExplore = findViewById<Button?>(R.id.btnNavExplore)
         val btnNavHistory = findViewById<Button?>(R.id.btnNavHistory)
 
-        // Check if user is a Driver or Passenger
-        val isDriver = intent.getBooleanExtra("IS_DRIVER", false) || (intent.getStringExtra("USER_ROLE") == "DRIVER")
+        // Read saved passenger registration info from SharedPreferences
+        val prefs = getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
+        val savedRole = prefs.getString("USER_ROLE", "PASSENGER") ?: "PASSENGER"
+        val savedName = intent.getStringExtra("USER_NAME") ?: prefs.getString("USER_NAME", "Passenger User") ?: "Passenger User"
+        val savedPhone = intent.getStringExtra("USER_PHONE") ?: prefs.getString("USER_PHONE", "+63 912 345 6789") ?: "+63 912 345 6789"
+        val savedAddress = intent.getStringExtra("USER_ADDRESS") ?: prefs.getString("USER_ADDRESS", "Nasugbu, Batangas (Zone 1)") ?: "Nasugbu, Batangas (Zone 1)"
+
+        val isDriver = savedRole == "DRIVER" || intent.getBooleanExtra("IS_DRIVER", false)
 
         if (isDriver) {
-            // Driver Profile Info
-            val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (Driver)"
-            val license = intent.getStringExtra("DRIVER_LICENSE") ?: "N12-34-567890"
-            val toda = intent.getStringExtra("DRIVER_TODA") ?: "ARASOF Campus TODA"
-            val plate = intent.getStringExtra("DRIVER_PLATE") ?: "AB-1234"
-            val type = intent.getStringExtra("TRICYCLE_TYPE") ?: "Honda Tricycle"
+            val driverName = prefs.getString("DRIVER_NAME", savedName) ?: savedName
+            val license = prefs.getString("DRIVER_LICENSE", "N12-34-567890") ?: "N12-34-567890"
+            val toda = prefs.getString("DRIVER_TODA", "ARASOF Campus TODA") ?: "ARASOF Campus TODA"
+            val plate = prefs.getString("DRIVER_PLATE", "AB-1234") ?: "AB-1234"
 
             tvProfileName?.text = "🛺 $driverName"
-            tvProfileContact?.text = "License: $license | Plate: $plate"
-            tvProfileZone?.text = "TODA: $toda\nVehicle: $type"
+            tvProfileContact?.text = "Contact: $savedPhone\nLicense: $license | Plate: $plate"
+            tvProfileZone?.text = "TODA: $toda\nAddress: $savedAddress"
             btnTripHistory?.text = "View Driver Earnings"
         } else {
-            // Passenger Profile Info
-            val name = intent.getStringExtra("USER_NAME") ?: "Passenger User"
-            val phone = intent.getStringExtra("USER_PHONE") ?: "+63 912 345 6789"
-            val address = intent.getStringExtra("USER_ADDRESS") ?: "Nasugbu, Batangas (Zone 1)"
-
-            tvProfileName?.text = "👤 $name"
-            tvProfileContact?.text = "Contact: $phone"
-            tvProfileZone?.text = "Address / Zone: $address"
+            tvProfileName?.text = "👤 $savedName"
+            tvProfileContact?.text = "Contact: $savedPhone"
+            tvProfileZone?.text = "Address / Zone: $savedAddress"
             btnTripHistory?.text = "View Recent Bookings"
         }
 
         btnEditProfile?.setOnClickListener {
-            Toast.makeText(this, "Edit profile feature selected", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Profile information updated", Toast.LENGTH_SHORT).show()
         }
 
         btnTripHistory?.setOnClickListener {
@@ -67,6 +66,7 @@ class ProfileActivity : AppCompatActivity() {
         }
 
         btnLogout?.setOnClickListener {
+            prefs.edit().clear().apply()
             Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

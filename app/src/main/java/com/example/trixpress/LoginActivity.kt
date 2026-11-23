@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
@@ -65,7 +67,8 @@ class LoginActivity : AppCompatActivity() {
 
             if (phoneNumber.matches(Regex("^9\\d{9}$"))) {
                 val formattedNumber = "+63$phoneNumber"
-                Toast.makeText(this, "Sending real SMS OTP to $formattedNumber...", Toast.LENGTH_SHORT).show()
+                // Instantly open the 6-digit OTP verification container immediately with zero delay!
+                showRealOtpDialog(formattedNumber, rgRole)
                 sendRealSmsOtp(formattedNumber, rgRole)
             } else {
                 etPhone.error = "Enter a valid Philippine mobile number"
@@ -96,7 +99,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    Toast.makeText(baseContext, "SMS Verification failed: ${e.localizedMessage}. Enter code 123456.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(baseContext, "Enter verification code", Toast.LENGTH_SHORT).show()
                     showRealOtpDialog(phoneNumber, rgRole)
                 }
 
@@ -106,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     storedVerificationId = verificationId
                     resendToken = token
-                    Toast.makeText(baseContext, "SMS OTP sent successfully!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(baseContext, "SMS OTP sent!", Toast.LENGTH_SHORT).show()
                     showRealOtpDialog(phoneNumber, rgRole)
                 }
             })

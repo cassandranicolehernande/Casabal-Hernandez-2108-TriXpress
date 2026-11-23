@@ -4,7 +4,6 @@ import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -13,25 +12,30 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.osmdroid.config.Configuration
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
 import java.util.Locale
 
-class MapPickerActivity : AppCompatActivity() {
+class MapPickerActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var mapView: MapView
-    private val defaultLocation = GeoPoint(14.0728, 120.6325) // BatStateU ARASOF Campus, Nasugbu
+    private lateinit var mMap: GoogleMap
+    private val defaultLocation = LatLng(14.0728, 120.6325) // BatStateU ARASOF Campus, Nasugbu
 
-    private var step = 1 // 1 = Pick-up, 2 = Drop-off
-    private var pickupGeoPoint: GeoPoint? = null
-    private var dropoffGeoPoint: GeoPoint? = null
+    private var step = 2 // Start directly in Drop-Off selection mode
+    private var pickupLatLng: LatLng = defaultLocation
+    private var dropoffLatLng: LatLng? = null
 
     private var pickupLocationName: String = "BatStateU ARASOF Campus, Nasugbu"
     private var dropoffLocationName: String = "Nasugbu Public Market, Town Proper"
@@ -39,17 +43,22 @@ class MapPickerActivity : AppCompatActivity() {
     private var pickupMarker: Marker? = null
     private var dropoffMarker: Marker? = null
 
+    private var currentMapTypeIndex = 0
+    private val mapTypes = intArrayOf(
+        GoogleMap.MAP_TYPE_NORMAL,
+        GoogleMap.MAP_TYPE_SATELLITE,
+        GoogleMap.MAP_TYPE_TERRAIN,
+        GoogleMap.MAP_TYPE_HYBRID
+    )
+    private val mapTypeNames = arrayOf("Normal", "Satellite", "Terrain", "Hybrid")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
-        Configuration.getInstance().userAgentValue = packageName
         setContentView(R.layout.activity_map_picker)
 
-        mapView = findViewById(R.id.pickerMap)
-        MapTileHelper.applyDefaultStreetTiles(mapView)
-        mapView.setMultiTouchControls(true)
-        mapView.controller.setZoom(16.0)
-        mapView.controller.setCenter(defaultLocation)
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.pickerMap) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         val tvInstruction = findViewById<TextView>(R.id.tvMapInstruction)
         val tvSummary = findViewById<TextView>(R.id.tvSelectedLocationSummary)
@@ -60,115 +69,148 @@ class MapPickerActivity : AppCompatActivity() {
         val rgService = findViewById<RadioGroup>(R.id.rgMapServiceType)
         val rgMode = findViewById<RadioGroup>(R.id.rgMapRideMode)
 
-        var isTopo = false
+        // Streamlined Drop-Off Selection Mode
+        tvInstruction.text = "Pin your DROP-OFF location on the map"
+        btnConfirm.text = "Confirm Drop-off & Review Fare"
+        layoutServiceAndMode.visibility = View.VISIBLE
+
         fabMapType.setOnClickListener {
-            isTopo = !isTopo
-            MapTileHelper.toggleStreetAndTopo(mapView, isTopo)
-            Toast.makeText(
-                this,
-                if (isTopo) "Map View: Topographic" else "Map View: Standard Street",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-
-        pickupMarker = Marker(mapView).apply {
-            position = defaultLocation
-            title = "📍 Pick-up Location"
-        }
-        mapView.overlays.add(pickupMarker)
-        mapView.invalidate()
-
-        try {
-            val fusedClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedClient.lastLocation.addOnSuccessListener { location: Location? ->
-                if (location != null) {
-                    val userPoint = GeoPoint(location.latitude, location.longitude)
-                    mapView.controller.animateTo(userPoint)
-                    mapView.controller.setZoom(17.0)
-                    pickupGeoPoint = userPoint
-                    pickupMarker?.position = userPoint
-                    lifecycleScope.launch {
-                        pickupLocationName = getAddressNameFromGeoPoint(userPoint)
-                        pickupMarker?.title = "📍 Pick-up: $pickupLocationName"
-                        tvSummary.text = "Your Real Location: $pickupLocationName"
-                        mapView.invalidate()
-                    }
-                }
-            }
-        } catch (e: SecurityException) {
-            e.printStackTrace()
+            currentMapTypeIndex = (currentMapTypeIndex + 1) % mapTypes.size
+            mMap.mapType = mapTypes[currentMapTypeIndex]
+            Toast.makeText(this, "Map View: ${mapTypeNames[currentMapTypeIndex]}", Toast.LENGTH_SHORT).show()
         }
 
         btnConfirm.setOnClickListener {
-            val centerPoint = GeoPoint(mapView.mapCenter.latitude, mapView.mapCenter.longitude)
+            val centerLatLng = mMap.cameraPosition.target
 
             lifecycleScope.launch {
-                val resolvedName = getAddressNameFromGeoPoint(centerPoint)
-                if (step == 1) {
-                    pickupGeoPoint = centerPoint
-                    pickupLocationName = resolvedName
-                    pickupMarker?.position = centerPoint
-                    pickupMarker?.title = "📍 Pick-up: $pickupLocationName"
+                val resolvedName = getLocationNameFromLatLng(centerLatLng)
+                dropoffLatLng = centerLatLng
+                dropoffLocationName = resolvedName
+                dropoffMarker?.remove()
+                dropoffMarker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(centerLatLng)
+                        .title("🏁 Drop-off: $dropoffLocationName")
+                        .snippet("Confirmed Destination")
+                )
+                dropoffMarker?.showInfoWindow()
 
-                    step = 2
-                    tvInstruction.text = "Step 2 of 2: Pin your DROP-OFF location"
-                    tvSummary.text = "Pick-up Set: $pickupLocationName\nNow position pin at your Destination."
-                    btnConfirm.text = "Confirm Drop-off & Review Fare"
-                    layoutServiceAndMode.visibility = View.VISIBLE
-                    Toast.makeText(this@MapPickerActivity, "Pick-up set: $pickupLocationName", Toast.LENGTH_SHORT).show()
-                } else {
-                    dropoffGeoPoint = centerPoint
-                    dropoffLocationName = resolvedName
-                    dropoffMarker?.let { mapView.overlays.remove(it) }
-                    dropoffMarker = Marker(mapView).apply {
-                        position = centerPoint
-                        title = "🏁 Drop-off: $dropoffLocationName"
-                    }
-                    mapView.overlays.add(dropoffMarker)
-                    mapView.invalidate()
+                val origin = pickupLatLng
+                val destination = dropoffLatLng!!
 
-                    val origin = pickupGeoPoint ?: defaultLocation
-                    val destination = dropoffGeoPoint ?: defaultLocation
+                val results = FloatArray(1)
+                Location.distanceBetween(
+                    origin.latitude, origin.longitude,
+                    destination.latitude, destination.longitude,
+                    results
+                )
+                val distanceKm = results[0] / 1000f
+                val baseFare = 40.0
+                val calculatedFare = baseFare + (distanceKm * 15.0)
+                val formattedFare = "₱" + String.format(Locale.getDefault(), "%.2f", calculatedFare)
 
-                    val results = FloatArray(1)
-                    Location.distanceBetween(
-                        origin.latitude, origin.longitude,
-                        destination.latitude, destination.longitude,
-                        results
-                    )
-                    val distanceKm = results[0] / 1000f
-                    val calculatedFare = 40.0 + (distanceKm * 15.0)
-                    val formattedFare = "₱" + String.format(Locale.getDefault(), "%.2f", calculatedFare)
-
-                    val serviceType = when (rgService.checkedRadioButtonId) {
-                        R.id.rbMapDelivery -> "Express Parcel Delivery"
-                        R.id.rbMapPakyaw -> "Pakyaw Charter"
-                        else -> "Standard Tricycle Ride"
-                    }
-
-                    val mode = if (rgMode.checkedRadioButtonId == R.id.rbMapKasya) "Kasya kami riyan!" else "Pasabay lang po!"
-
-                    val intent = Intent(this@MapPickerActivity, SearchDropoffActivity::class.java).apply {
-                        putExtra("PICKUP_LOCATION", pickupLocationName)
-                        putExtra("DROPOFF_LOCATION", dropoffLocationName)
-                        putExtra("EST_FARE", formattedFare)
-                        putExtra("SERVICE_TYPE", serviceType)
-                        putExtra("BOOKING_MODE", mode)
-                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    }
-                    startActivity(intent)
-                    finish()
+                val serviceType = when (rgService.checkedRadioButtonId) {
+                    R.id.rbMapDelivery -> "Express Parcel Delivery"
+                    R.id.rbMapPakyaw -> "Pakyaw Charter"
+                    else -> "Standard Tricycle Ride"
                 }
+
+                val mode = if (rgMode.checkedRadioButtonId == R.id.rbMapKasya) {
+                    "Kasya kami riyan!"
+                } else {
+                    "Pasabay lang po!"
+                }
+
+                val intent = Intent(this@MapPickerActivity, SearchDropoffActivity::class.java).apply {
+                    putExtra("PICKUP_LOCATION", pickupLocationName)
+                    putExtra("DROPOFF_LOCATION", dropoffLocationName)
+                    putExtra("PICKUP_LAT", origin.latitude)
+                    putExtra("PICKUP_LNG", origin.longitude)
+                    putExtra("DEST_LAT", destination.latitude)
+                    putExtra("DEST_LNG", destination.longitude)
+                    putExtra("EST_FARE", formattedFare)
+                    putExtra("SERVICE_TYPE", serviceType)
+                    putExtra("BOOKING_MODE", mode)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+                startActivity(intent)
+                finish()
             }
         }
     }
 
-    private suspend fun getAddressNameFromGeoPoint(geoPoint: GeoPoint): String = withContext(Dispatchers.IO) {
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+        mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 16f))
+
+        try {
+            mMap.isMyLocationEnabled = true
+            val fusedClient = LocationServices.getFusedLocationProviderClient(this)
+            val token = CancellationTokenSource().token
+            fusedClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, token)
+                .addOnSuccessListener { location: Location? ->
+                    val targetLoc = location ?: Location("").apply {
+                        latitude = defaultLocation.latitude
+                        longitude = defaultLocation.longitude
+                    }
+                    val userLatLng = LatLng(targetLoc.latitude, targetLoc.longitude)
+                    pickupLatLng = userLatLng
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLatLng, 17f))
+
+                    lifecycleScope.launch {
+                        pickupLocationName = getLocationNameFromLatLng(userLatLng)
+                        pickupMarker?.remove()
+                        pickupMarker = mMap.addMarker(
+                            MarkerOptions()
+                                .position(userLatLng)
+                                .title("📍 Pick-up (Your Real Location): $pickupLocationName")
+                                .snippet("Live GPS Position")
+                        )
+                        pickupMarker?.showInfoWindow()
+                        findViewById<TextView>(R.id.tvSelectedLocationSummary).text = "Pick-up: $pickupLocationName\nPin your Drop-off location."
+                    }
+                }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+
+        mMap.setOnMapClickListener { latLng ->
+            lifecycleScope.launch {
+                val locName = getLocationNameFromLatLng(latLng)
+                dropoffMarker?.remove()
+                dropoffLatLng = latLng
+                dropoffLocationName = locName
+                dropoffMarker = mMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title("🏁 Drop-off: $locName")
+                        .snippet("Tap Confirm to complete booking")
+                )
+                dropoffMarker?.showInfoWindow()
+                findViewById<TextView>(R.id.tvSelectedLocationSummary).text = "Drop-off Destination: $locName"
+            }
+        }
+
+        mMap.setOnCameraIdleListener {
+            val centerLatLng = mMap.cameraPosition.target
+            lifecycleScope.launch {
+                val centerName = getLocationNameFromLatLng(centerLatLng)
+                dropoffLocationName = centerName
+                dropoffMarker?.position = centerLatLng
+                dropoffMarker?.title = "🏁 Drop-off: $centerName"
+                findViewById<TextView>(R.id.tvSelectedLocationSummary).text = "Drop-off Destination: $centerName"
+            }
+        }
+    }
+
+    private suspend fun getLocationNameFromLatLng(latLng: LatLng): String = withContext(Dispatchers.IO) {
         try {
             @Suppress("DEPRECATION")
             val geocoder = Geocoder(this@MapPickerActivity, Locale.getDefault())
             @Suppress("DEPRECATION")
-            val addresses = geocoder.getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
             val address = addresses?.firstOrNull()
             if (address != null) {
                 val line = address.getAddressLine(0)
@@ -177,16 +219,6 @@ class MapPickerActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return@withContext "Nasugbu Location (${String.format(Locale.getDefault(), "%.4f", geoPoint.latitude)}, ${String.format(Locale.getDefault(), "%.4f", geoPoint.longitude)})"
-    }
-
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
+        return@withContext NasugbuLocations.findNearestPlaceName(latLng.latitude, latLng.longitude)
     }
 }

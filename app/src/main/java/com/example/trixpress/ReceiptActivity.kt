@@ -34,7 +34,12 @@ class ReceiptActivity : AppCompatActivity() {
         tvReceiptFare?.text = fare
 
         btnRateDriver?.setOnClickListener {
-            val intent = Intent(this, RatingActivity::class.java)
+            val intent = Intent(this, RatingActivity::class.java).apply {
+                putExtra("DRIVER_NAME", driverName)
+                putExtra("PICKUP_LOC", pickupLoc)
+                putExtra("DEST_LOC", destLoc)
+                putExtra("EST_FARE", fare)
+            }
             startActivity(intent)
         }
 

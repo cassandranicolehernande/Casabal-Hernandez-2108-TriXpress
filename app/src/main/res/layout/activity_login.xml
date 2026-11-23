@@ -35,13 +35,14 @@
             android:elevation="8dp"
             app:layout_constraintTop_toBottomOf="@id/imgLoginPin">
 
-            <!-- Role Selection (Passenger / Driver) -->
+            <!-- Role Selection Removed (RadioGroup Hidden) -->
             <RadioGroup
                 android:id="@+id/rgRole"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="horizontal"
+                android:visibility="gone"
                 android:layout_marginBottom="16dp">
 
                 <RadioButton

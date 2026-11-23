@@ -22,7 +22,7 @@
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <!-- STEP 1: Glass Card -->
+        <!-- STEP 1: Personal & TODA Info Glass Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Step 1: Personal Information"
+                android:text="Step 1: Personal &amp; TODA Information"
                 android:textColor="@color/app_blue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -81,10 +81,50 @@
                 android:textColorHint="@color/text_hint" />
 
             <EditText
+                android:id="@+id/etDriverContact"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Driver Contact Number (+63 9XX XXX XXXX)"
+                android:inputType="phone"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
+
+            <AutoCompleteTextView
+                android:id="@+id/etTodaAssociation"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:completionThreshold="1"
+                android:hint="TODA Association (e.g., ARASOF TODA)"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
+
+            <EditText
+                android:id="@+id/etRegisteredZone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Registered TODA Service Zone (e.g., Nasugbu Zone 1)"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
+
+            <EditText
                 android:id="@+id/etDriverLicense"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_edittext_glass"
                 android:hint="Driver's License Number"
                 android:inputType="text"
@@ -93,14 +133,24 @@
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint" />
 
-            <!-- YELLOW OVAL BUTTON -->
+            <!-- Photo Upload with Preview -->
+            <ImageView
+                android:id="@+id/iv2x2Preview"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/trikeicon"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
             <android.widget.Button
                 android:id="@+id/btnUploadDriver2x2"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_btn_yellow"
-                android:text="Upload 2x2 Picture of Driver"
+                android:text="📷 Upload 2x2 Picture of Driver"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
@@ -114,7 +164,7 @@
                 android:textSize="12sp" />
         </LinearLayout>
 
-        <!-- STEP 2: Glass Card -->
+        <!-- STEP 2: Tricycle Details Glass Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,7 +179,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Step 2: Tricycle Details (Unit 1)"
+                android:text="Step 2: Tricycle Unit Details"
                 android:textColor="@color/app_blue"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -141,7 +191,20 @@
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/bg_edittext_glass"
                 android:completionThreshold="1"
-                android:hint="Type of Tricycle (e.g., Honda)"
+                android:hint="Type / Model of Tricycle (e.g., Bajaj, Honda TMX)"
+                android:inputType="text"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#000000"
+                android:textColorHint="@color/text_hint" />
+
+            <EditText
+                android:id="@+id/etSeaterCapacity"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Seating Capacity (Auto-Detected)"
                 android:inputType="text"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
@@ -161,14 +224,24 @@
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint" />
 
-            <!-- YELLOW OVAL BUTTON -->
+            <!-- Tricycle Photo Upload with Preview -->
+            <ImageView
+                android:id="@+id/ivTrikePhotoPreview"
+                android:layout_width="140dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/trikeicon"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
             <android.widget.Button
                 android:id="@+id/btnUploadTricyclePic"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/bg_btn_yellow"
-                android:text="Upload Picture of Tricycle"
+                android:text="🛺 Upload Picture of Tricycle"
                 android:textColor="#000000"
                 android:textStyle="bold" />
 
@@ -176,24 +249,13 @@
                 android:id="@+id/tvTricyclePicStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="No tricycle picture attached"
                 android:textColor="@color/text_hint"
                 android:textSize="12sp" />
-
-            <!-- YELLOW OVAL BUTTON -->
-            <android.widget.Button
-                android:id="@+id/btnAddAnotherUnit"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/bg_btn_yellow"
-                android:text="+ Add Another Tricycle Unit"
-                android:textColor="#000000"
-                android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- YELLOW OVAL BUTTON (Submit) -->
+        <!-- Submit Button -->
         <android.widget.Button
             android:id="@+id/btnSubmitDriverReg"
             android:layout_width="match_parent"

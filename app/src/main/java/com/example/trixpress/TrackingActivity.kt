@@ -83,7 +83,7 @@ class TrackingActivity : AppCompatActivity() {
         routePoints = listOf(pickupLocation, destinationLocation)
 
         mapView = findViewById(R.id.trackingMap)
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        MapTileHelper.applyDefaultStreetTiles(mapView)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(16.0)
         mapView.controller.setCenter(pickupLocation)
@@ -108,8 +108,7 @@ class TrackingActivity : AppCompatActivity() {
         var isTopo = false
         fabTrackingMapLayer.setOnClickListener {
             isTopo = !isTopo
-            mapView.setTileSource(if (isTopo) TileSourceFactory.OpenTopo else TileSourceFactory.MAPNIK)
-            mapView.invalidate()
+            MapTileHelper.toggleStreetAndTopo(mapView, isTopo)
         }
 
         btnSos.setOnClickListener {

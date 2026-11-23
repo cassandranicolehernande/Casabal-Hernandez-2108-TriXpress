@@ -17,7 +17,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -66,7 +65,7 @@ class MapActivity : AppCompatActivity() {
         )
 
         mapView = findViewById(R.id.map)
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        MapTileHelper.applyDefaultStreetTiles(mapView)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(15.0)
         mapView.controller.setCenter(passengerLocation)

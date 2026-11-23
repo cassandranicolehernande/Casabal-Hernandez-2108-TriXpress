@@ -13,13 +13,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -47,7 +46,7 @@ class MapPickerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_map_picker)
 
         mapView = findViewById(R.id.pickerMap)
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        MapTileHelper.applyDefaultStreetTiles(mapView)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(16.0)
         mapView.controller.setCenter(defaultLocation)
@@ -64,9 +63,12 @@ class MapPickerActivity : AppCompatActivity() {
         var isTopo = false
         fabMapType.setOnClickListener {
             isTopo = !isTopo
-            mapView.setTileSource(if (isTopo) TileSourceFactory.OpenTopo else TileSourceFactory.MAPNIK)
-            mapView.invalidate()
-            Toast.makeText(this, if (isTopo) "Map View: Topographic" else "Map View: Standard Mapnik", Toast.LENGTH_SHORT).show()
+            MapTileHelper.toggleStreetAndTopo(mapView, isTopo)
+            Toast.makeText(
+                this,
+                if (isTopo) "Map View: Topographic" else "Map View: Standard Street",
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
         pickupMarker = Marker(mapView).apply {

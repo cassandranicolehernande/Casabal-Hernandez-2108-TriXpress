@@ -10,12 +10,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationView
 import org.osmdroid.config.Configuration
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -46,7 +45,7 @@ class PassengerDashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_passenger_dashboard)
 
         mapView = findViewById(R.id.map)
-        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        MapTileHelper.applyDefaultStreetTiles(mapView)
         mapView.setMultiTouchControls(true)
         mapView.controller.setZoom(16.0)
         mapView.controller.setCenter(passengerLocation)
@@ -121,9 +120,12 @@ class PassengerDashboardActivity : AppCompatActivity() {
         var isTopo = false
         fabMapLayer.setOnClickListener {
             isTopo = !isTopo
-            mapView.setTileSource(if (isTopo) TileSourceFactory.OpenTopo else TileSourceFactory.MAPNIK)
-            mapView.invalidate()
-            Toast.makeText(this, if (isTopo) "Map View: Topographic" else "Map View: Standard Mapnik", Toast.LENGTH_SHORT).show()
+            MapTileHelper.toggleStreetAndTopo(mapView, isTopo)
+            Toast.makeText(
+                this,
+                if (isTopo) "Map View: Topographic" else "Map View: Standard Street",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

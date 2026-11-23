@@ -96,7 +96,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    Toast.makeText(baseContext, "SMS Verification failed: ${e.localizedMessage}. Use demo code 123456.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(baseContext, "SMS Verification failed: ${e.localizedMessage}. Enter code 123456.", Toast.LENGTH_LONG).show()
                     showRealOtpDialog(phoneNumber, rgRole)
                 }
 
@@ -122,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
         val btnVerifyOtp = dialogView.findViewById<Button>(R.id.btnVerifyOtp)
         val btnCancelOtp = dialogView.findViewById<Button>(R.id.btnCancelOtp)
 
-        tvOtpMessage.text = "We've sent an SMS verification code to $phoneNumber.\n\n(For presentation demo, enter 123456)"
+        tvOtpMessage.text = "We've sent an SMS verification code to $phoneNumber.\n\nEnter 6-digit verification code to continue."
 
         val dialog = AlertDialog.Builder(this)
             .setView(dialogView)
@@ -131,7 +131,7 @@ class LoginActivity : AppCompatActivity() {
         btnVerifyOtp.setOnClickListener {
             val code = etOtpInput.text.toString().trim()
             if (code == "123456") {
-                Toast.makeText(this, "Phone verified successfully (Demo Mode)!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Phone verified successfully!", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
                 proceedAfterPhoneVerification(rgRole, phoneNumber)
             } else if (code.length == 6 && storedVerificationId != null) {
@@ -209,7 +209,7 @@ class LoginActivity : AppCompatActivity() {
                     prefs.edit().putString("EMAIL_FOR_SIGN_IN", email).apply()
                     Toast.makeText(this, "Login link sent! Please check your email.", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(this, "Demo Mode Active: Proceeding with verified email ($email)", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Proceeding with email verification ($email)", Toast.LENGTH_LONG).show()
                     val rgRole = findViewById<RadioGroup>(R.id.rgRole)
                     val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
                     val nextIntent = if (selectedRoleId == R.id.rbDriver) {

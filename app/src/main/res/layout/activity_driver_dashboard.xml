@@ -21,7 +21,20 @@
             android:textColor="#FFC107"
             android:gravity="center"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="20dp" />
+
+        <!-- Driver Profile Button -->
+        <android.widget.Button
+            android:id="@+id/btnDriverProfile"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_btn_yellow"
+            android:backgroundTint="#CC1A237E"
+            android:text="👤 View My Driver Profile"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp" />
 
         <!-- Incoming Ride Request Card (Glassmorphism) -->
         <LinearLayout

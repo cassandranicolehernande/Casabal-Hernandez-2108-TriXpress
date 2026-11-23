@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="#1A237E">
 
-    <!-- Map View Fragment -->
-    <fragment
+    <!-- Map View Container -->
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/trackingMap"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
@@ -17,8 +17,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Top Status Overlay Card (Glassmorphism Blue & Yellow) -->
+    <!-- Top Status Overlay Card (Glassmorphism Blue & Gold) -->
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/topStatusCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -41,11 +42,11 @@
                 android:id="@+id/tvTripStatusTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🛺 Driver Arriving at Pick-up"
+                android:layout_marginBottom="4dp"
+                android:text="🛺 toward Magallanes - Nasugbu Road"
                 android:textColor="#FFC107"
                 android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvTrackingDriver"
@@ -58,22 +59,22 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-
+    <!-- Map Layer Toggle FAB -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabTrackingMapLayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginTop="110dp"
+        android:contentDescription="Toggle Map Layer"
         android:src="@android:drawable/ic_menu_mapmode"
         app:backgroundTint="#FFC107"
-        app:tint="#1A237E"
         app:fabSize="mini"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="Map Layer" />
+        app:layout_constraintTop_toBottomOf="@id/topStatusCard"
+        app:tint="#1A237E" />
 
-
+    <!-- Bottom Trip Controls Card -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomCard"
         android:layout_width="match_parent"
@@ -96,13 +97,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -111,53 +113,59 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Driver is on the way to pick-up point"
+                        android:textColor="#FFC107"
                         android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFC107" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvEstimatedTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Estimated Time of Arrival: 2 mins"
-                        android:textSize="14sp"
+                        android:layout_marginTop="4dp"
+                        android:text="Estimated Time of Arrival: 20 mins (7.4 km)"
                         android:textColor="#E0E0E0"
-                        android:layout_marginTop="4dp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <!-- SOS Button (Pill/Oval) -->
-                <Button
+                <!-- SOS Button -->
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSos"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:text=" 🚨"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:contentDescription="Emergency SOS"
+                    android:insetLeft="0dp"
+                    android:insetTop="0dp"
+                    android:insetRight="0dp"
+                    android:insetBottom="0dp"
+                    android:padding="0dp"
+                    android:text="🚨"
+                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
-                    android:background="@drawable/bg_btn_yellow"
-                    android:backgroundTint="#D32F2F" />
+                    app:backgroundTint="#D32F2F"
+                    app:cornerRadius="26dp" />
             </LinearLayout>
 
-            <!-- Button to open official native Google Maps app directly -->
-            <android.widget.Button
+            <Button
                 android:id="@+id/btnOpenGoogleMapsApp"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="12dp"
                 android:background="@drawable/bg_btn_yellow"
-                android:text="🗺️Use Google Maps App"
+                android:text="🗺️ Use Google Maps App"
                 android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:textSize="14sp" />
+                android:visibility="visible" />
 
-
-            <android.widget.Button
+            <Button
                 android:id="@+id/btnActionTrip"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:background="@drawable/bg_btn_yellow"
                 android:text="Confirm Driver Arrived &amp; Start Trip"
                 android:textColor="#000000"
-                android:textStyle="bold"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

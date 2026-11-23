@@ -43,15 +43,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private val sampleDestination = LatLng(14.0725, 120.6335)
 
     private val allDrivers = listOf(
-        TricycleDriver("Kuya Roberto", "ARASOF Campus TODA", LatLng(14.0689, 120.6295), "₱40.00"),
-        TricycleDriver("Kuya Lito", "ARASOF Campus TODA", LatLng(14.0695, 120.6302), "₱40.00"),
-        TricycleDriver("Kuya Cardo", "ARASOF Campus TODA", LatLng(14.0682, 120.6288), "₱40.00"),
-        TricycleDriver("Kuya Juaning", "Town Proper TODA", LatLng(14.0722, 120.6341), "₱45.00"),
-        TricycleDriver("Kuya Dodong", "Town Proper TODA", LatLng(14.0728, 120.6350), "₱45.00"),
-        TricycleDriver("Kuya Mario", "Bunducan TODA", LatLng(14.0757, 120.6318), "₱50.00"),
-        TricycleDriver("Kuya Ben", "Bunducan TODA", LatLng(14.0762, 120.6325), "₱50.00"),
-        TricycleDriver("Kuya Nilo", "Wawa TODA", LatLng(14.0950, 120.6400), "₱60.00"),
-        TricycleDriver("Kuya Mark", "Natipuan Beach TODA", LatLng(14.1200, 120.6100), "₱80.00")
+        TricycleDriver("Kuya Roberto", "ARASOF Campus TODA", LatLng(14.0667, 120.6261), "₱40.00"),
+        TricycleDriver("Kuya Lito", "ARASOF Campus TODA", LatLng(14.0667, 120.6261), "₱40.00"),
+        TricycleDriver("Kuya Cardo", "ARASOF Campus TODA", LatLng(14.0667, 120.6261), "₱40.00"),
+        TricycleDriver("Kuya Juaning", "Town Proper TODA", LatLng(14.0743, 120.6325), "₱45.00"),
+        TricycleDriver("Kuya Dodong", "Town Proper TODA", LatLng(14.0743, 120.6325), "₱45.00"),
+        TricycleDriver("Kuya Mario", "Bunducan TODA", LatLng(14.0951688, 120.6483039), "₱50.00"),
+        TricycleDriver("Kuya Ben", "Bunducan TODA", LatLng(14.0951688, 120.6483039), "₱50.00"),
+        TricycleDriver("Kuya Nilo", "Wawa TODA", LatLng(14.09945, 120.64394), "₱60.00"),
+        TricycleDriver("Kuya Mark", "Natipuan Beach TODA", LatLng(14.1283, 120.6019), "₱80.00")
     )
 
     private var nearbyDrivers = listOf<TricycleDriver>()

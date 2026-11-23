@@ -21,9 +21,95 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="16dp"
             android:gravity="center"
             android:layout_gravity="center_horizontal" />
+
+        <!-- Saved Frequent Places Quick-Tap Chips -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_glass_card"
+            android:padding="12dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⭐ Saved Frequent Places &amp; Sitios"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/chipHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🏠 Home"
+                        android:textColor="#1A237E"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipCampus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🏫 BatStateU ARASOF"
+                        android:textColor="#1A237E"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipMarket"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🛒 Nasugbu Market"
+                        android:textColor="#1A237E"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipWawa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="8dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="⚓ Wawa Port"
+                        android:textColor="#1A237E"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipCalayo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🏖️ Calayo Beach"
+                        android:textColor="#1A237E"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
 
         <!-- Glassmorphism Container for Inputs -->
         <LinearLayout
@@ -33,7 +119,7 @@
             android:orientation="vertical"
             android:padding="20dp"
             android:elevation="8dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,6 +168,249 @@
 
         </LinearLayout>
 
+        <!-- Angkas-Style Add-Ons Card (Raincoat, Umbrella, Insurance, Rain Toggle) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="➕ Add-Ons &amp; Weather Options"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="10dp" />
+
+            <CheckBox
+                android:id="@+id/cbRain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌧️ Heavy Rain / Maulan (Surcharge +₱20)"
+                android:textColor="#D32F2F"
+                android:textStyle="bold"
+                android:textSize="13sp" />
+
+            <CheckBox
+                android:id="@+id/cbRaincoat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌧️ Rent-A-Raincoat (+₱19.00)"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+
+            <CheckBox
+                android:id="@+id/cbUmbrella"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="☂️ Rent-An-Umbrella (+₱15.00)"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+
+            <CheckBox
+                android:id="@+id/cbInsurance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🛡️ TODA Insurance Plus (+₱10.00)"
+                android:textColor="#000000"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Add a Tip Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💸 Add a Tip for Kuya Driver"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/btnTip10"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:text="+₱10"
+                    android:textColor="#1A237E"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnTip20"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:text="+₱20"
+                    android:textColor="#1A237E"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnTip50"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:text="+₱50"
+                    android:textColor="#1A237E"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnTip100"
+                    android:layout_width="0dp"
+                    android:layout_height="42dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#FFFFFF"
+                    android:text="+₱100"
+                    android:textColor="#1A237E"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Message / Quick-Tap Chat Chips for Driver ("Pakibilis po", etc.) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="💬 Quick Messages &amp; Instructions for Driver"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Quick-tap chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/chipFast"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="6dp"
+                        android:backgroundTint="#FFC107"
+                        android:text="⚡ Pakibilis po!"
+                        android:textColor="#000000"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipGate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="6dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🚪 Nasa gate na po ako"
+                        android:textColor="#1A237E"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipMarketBag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="6dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="🛍️ May dala pong market sacks"
+                        android:textColor="#1A237E"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/chipCorner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:backgroundTint="#FFFFFF"
+                        android:text="📍 Malapit sa kanto"
+                        android:textColor="#1A237E"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <EditText
+                android:id="@+id/etDriverNotes"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="Type custom message for driver..."
+                android:textColorHint="@color/text_hint"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <!-- Estimated Total Fare Display Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="💰 Total Estimated Fare:"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E" />
+
+            <TextView
+                android:id="@+id/tvEstimatedFare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="₱50.00"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#D32F2F" />
+        </LinearLayout>
+
         <!-- Glassmorphism Container for Options -->
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,7 +419,7 @@
             android:orientation="vertical"
             android:padding="20dp"
             android:elevation="8dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="16dp">
 
             <!-- Choose Service Type -->
             <TextView
@@ -114,7 +443,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="🛺 Indiviual Ride "
+                    android:text="🛺 Individual Ride"
                     android:textColor="#000000"
                     android:textSize="14sp"
                     android:layout_marginBottom="8dp"/>
@@ -170,6 +499,124 @@
                     android:text="Group"/>
             </RadioGroup>
 
+        </LinearLayout>
+
+        <!-- Passenger Count Selector (Visible only for Group Pakyaw Charter) -->
+        <LinearLayout
+            android:id="@+id/layoutPassengerCount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👥 Number of Passengers for Pakyaw Charter:"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp" />
+
+            <RadioGroup
+                android:id="@+id/rgPassengerCount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbPax1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="1 Pax"
+                    android:textColor="#000000" />
+
+                <RadioButton
+                    android:id="@+id/rbPax2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2 Pax"
+                    android:textColor="#000000" />
+
+                <RadioButton
+                    android:id="@+id/rbPax3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="3 Pax"
+                    android:textColor="#000000" />
+
+                <RadioButton
+                    android:id="@+id/rbPax4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="4 Pax"
+                    android:textColor="#000000" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- Parcel Details Card (Visible only for Express Parcel Delivery) -->
+        <LinearLayout
+            android:id="@+id/layoutParcelDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_glass_card"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:elevation="6dp"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📦 Parcel &amp; Pasalubong Details:"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#1A237E"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/etParcelDescription"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_edittext_glass"
+                android:hint="e.g. Box of Pasalubong, Big Box, Documents..."
+                android:textColorHint="@color/text_hint"
+                android:textColor="#000000"
+                android:textSize="13sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/btnAttachParcelPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:backgroundTint="#FFFFFF"
+                android:text="📷 Attach Photo of Parcel (For Driver Review)"
+                android:textColor="#1A237E"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPhotoStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:text="No photo attached yet"
+                android:textColor="#555555"
+                android:textSize="11sp" />
         </LinearLayout>
 
         <!-- Search in Google Maps Button -->

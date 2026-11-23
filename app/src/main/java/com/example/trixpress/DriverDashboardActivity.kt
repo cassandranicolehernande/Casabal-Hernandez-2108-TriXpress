@@ -14,10 +14,21 @@ class DriverDashboardActivity : AppCompatActivity() {
 
         val btnAcceptRide = findViewById<Button>(R.id.btnAcceptRide)
         val btnDeclineRide = findViewById<Button>(R.id.btnDeclineRide)
+        val btnDriverProfile = findViewById<Button>(R.id.btnDriverProfile)
 
         val tvDriverPickup = findViewById<TextView>(R.id.tvDriverPickup)
         val tvDriverDestination = findViewById<TextView>(R.id.tvDriverDestination)
         val tvDriverFare = findViewById<TextView>(R.id.tvDriverFare)
+
+        val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (Driver)"
+
+        btnDriverProfile.setOnClickListener {
+            val intent = Intent(this, ProfileActivity::class.java).apply {
+                putExtra("IS_DRIVER", true)
+                putExtra("DRIVER_NAME", driverName)
+            }
+            startActivity(intent)
+        }
 
         // Simulate an incoming booking request
         tvDriverPickup.text = "Passenger: Juan Dela Cruz\nPickup: BatStateU ARASOF Campus"

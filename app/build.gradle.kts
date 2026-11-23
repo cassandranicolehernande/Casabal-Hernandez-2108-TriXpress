@@ -42,10 +42,9 @@ dependencies {
     implementation(libs.material)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
 
-    // Google Maps & Routing Utilities
-    implementation("com.google.android.gms:play-services-maps:18.2.0")
+    // OSMDroid & Routing Utilities
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
     implementation("com.google.android.gms:play-services-location:21.1.0")
-    implementation("com.google.maps.android:android-maps-utils:3.8.2")
 
     // Networking (for Google Directions API)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")

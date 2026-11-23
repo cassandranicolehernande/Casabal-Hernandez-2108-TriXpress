@@ -19,10 +19,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.osmdroid.util.GeoPoint
 import java.util.Locale
 
 class SearchDropoffActivity : AppCompatActivity() {
@@ -176,9 +176,8 @@ class SearchDropoffActivity : AppCompatActivity() {
                 val fusedClient = LocationServices.getFusedLocationProviderClient(this)
                 fusedClient.lastLocation.addOnSuccessListener { location: Location? ->
                     if (location != null) {
-                        val latLng = LatLng(location.latitude, location.longitude)
                         lifecycleScope.launch {
-                            val addressName = getAddressNameFromLatLng(latLng)
+                            val addressName = getAddressNameFromGeoPoint(GeoPoint(location.latitude, location.longitude))
                             etPickup.setText(addressName, false)
                         }
                     } else {
@@ -265,19 +264,19 @@ class SearchDropoffActivity : AppCompatActivity() {
             val mode = if (rgRideMode.checkedRadioButtonId == R.id.rbGroup) "Group" else "Individual Passenger"
             val totalFare = tvEstimatedFare.text.toString()
 
-            val pickupLatLng = getLatLngForLandmark(pickup)
-            val dropoffLatLng = getLatLngForLandmark(dropoff)
+            val pickupGeoPoint = getGeoPointForLandmark(pickup)
+            val dropoffGeoPoint = getGeoPointForLandmark(dropoff)
 
-            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupLatLng, dropoffLatLng)
+            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupGeoPoint, dropoffGeoPoint)
         }
     }
 
-    private suspend fun getAddressNameFromLatLng(latLng: LatLng): String = withContext(Dispatchers.IO) {
+    private suspend fun getAddressNameFromGeoPoint(geoPoint: GeoPoint): String = withContext(Dispatchers.IO) {
         try {
             @Suppress("DEPRECATION")
             val geocoder = Geocoder(this@SearchDropoffActivity, Locale.getDefault())
             @Suppress("DEPRECATION")
-            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            val addresses = geocoder.getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
             val address = addresses?.firstOrNull()
             if (address != null) {
                 val line = address.getAddressLine(0)
@@ -286,29 +285,29 @@ class SearchDropoffActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        return@withContext "Current Live GPS Location (${String.format(Locale.getDefault(), "%.4f", latLng.latitude)}, ${String.format(Locale.getDefault(), "%.4f", latLng.longitude)})"
+        return@withContext "Current Live GPS Location (${String.format(Locale.getDefault(), "%.4f", geoPoint.latitude)}, ${String.format(Locale.getDefault(), "%.4f", geoPoint.longitude)})"
     }
 
-    private fun getLatLngForLandmark(name: String): LatLng {
+    private fun getGeoPointForLandmark(name: String): GeoPoint {
         val lower = name.lowercase(Locale.getDefault())
         return when {
-            lower.contains("arasof") || lower.contains("campus") -> LatLng(14.0728, 120.6325)
-            lower.contains("market") || lower.contains("town proper") -> LatLng(14.0745, 120.6360)
-            lower.contains("municipal") -> LatLng(14.0730, 120.6340)
-            lower.contains("jollibee") -> LatLng(14.0715, 120.6330)
-            lower.contains("church") -> LatLng(14.0735, 120.6350)
-            lower.contains("wawa") -> LatLng(14.0780, 120.6380)
-            lower.contains("calayo") -> LatLng(14.0880, 120.6420)
-            lower.contains("natipuan") -> LatLng(14.0820, 120.6400)
-            lower.contains("bunducan") -> LatLng(14.0755, 120.6360)
-            lower.contains("looc") -> LatLng(14.1200, 120.6400)
-            lower.contains("bulihan") -> LatLng(14.0850, 120.6420)
-            lower.contains("barangay 1") -> LatLng(14.0732, 120.6345)
-            lower.contains("barangay 2") -> LatLng(14.0780, 120.6380)
-            lower.contains("barangay 3") -> LatLng(14.0689, 120.6295)
-            lower.contains("barangay 4") -> LatLng(14.0728, 120.6325)
-            lower.contains("barangay 5") -> LatLng(14.0752, 120.6358)
-            else -> LatLng(14.0745, 120.6360)
+            lower.contains("arasof") || lower.contains("campus") -> GeoPoint(14.0728, 120.6325)
+            lower.contains("market") || lower.contains("town proper") -> GeoPoint(14.0745, 120.6360)
+            lower.contains("municipal") -> GeoPoint(14.0730, 120.6340)
+            lower.contains("jollibee") -> GeoPoint(14.0715, 120.6330)
+            lower.contains("church") -> GeoPoint(14.0735, 120.6350)
+            lower.contains("wawa") -> GeoPoint(14.0780, 120.6380)
+            lower.contains("calayo") -> GeoPoint(14.0880, 120.6420)
+            lower.contains("natipuan") -> GeoPoint(14.0820, 120.6400)
+            lower.contains("bunducan") -> GeoPoint(14.0755, 120.6360)
+            lower.contains("looc") -> GeoPoint(14.1200, 120.6400)
+            lower.contains("bulihan") -> GeoPoint(14.0850, 120.6420)
+            lower.contains("barangay 1") -> GeoPoint(14.0732, 120.6345)
+            lower.contains("barangay 2") -> GeoPoint(14.0780, 120.6380)
+            lower.contains("barangay 3") -> GeoPoint(14.0689, 120.6295)
+            lower.contains("barangay 4") -> GeoPoint(14.0728, 120.6325)
+            lower.contains("barangay 5") -> GeoPoint(14.0752, 120.6358)
+            else -> GeoPoint(14.0745, 120.6360)
         }
     }
 
@@ -355,8 +354,8 @@ class SearchDropoffActivity : AppCompatActivity() {
         mode: String,
         fare: String,
         notes: String,
-        pickupLatLng: LatLng,
-        dropoffLatLng: LatLng
+        pickupGeoPoint: GeoPoint,
+        dropoffGeoPoint: GeoPoint
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_searching_driver, null)
         val tvStatus = dialogView.findViewById<TextView>(R.id.tvSearchStatus)
@@ -389,10 +388,10 @@ class SearchDropoffActivity : AppCompatActivity() {
                     putExtra("DRIVER_NAME", "Kuya Roberto (ARASOF TODA)")
                     putExtra("PICKUP_LOC", pickup)
                     putExtra("DEST_LOC", dropoff)
-                    putExtra("PICKUP_LAT", pickupLatLng.latitude)
-                    putExtra("PICKUP_LNG", pickupLatLng.longitude)
-                    putExtra("DEST_LAT", dropoffLatLng.latitude)
-                    putExtra("DEST_LNG", dropoffLatLng.longitude)
+                    putExtra("PICKUP_LAT", pickupGeoPoint.latitude)
+                    putExtra("PICKUP_LNG", pickupGeoPoint.longitude)
+                    putExtra("DEST_LAT", dropoffGeoPoint.latitude)
+                    putExtra("DEST_LNG", dropoffGeoPoint.longitude)
                     putExtra("SERVICE_TYPE", serviceType)
                     putExtra("BOOKING_MODE", mode)
                     putExtra("EST_FARE", fare)

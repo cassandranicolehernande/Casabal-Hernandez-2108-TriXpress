@@ -34,9 +34,8 @@
             app:strokeColor="#80FFE082"
             android:layout_marginBottom="20dp">
 
-            <fragment
+            <org.osmdroid.views.MapView
                 android:id="@+id/adminZoneMap"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.google.android.material.card.MaterialCardView>

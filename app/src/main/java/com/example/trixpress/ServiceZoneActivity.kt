@@ -1,28 +1,32 @@
 package com.example.trixpress
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
 
-class ServiceZoneActivity : AppCompatActivity(), OnMapReadyCallback {
+class ServiceZoneActivity : AppCompatActivity() {
 
-    private lateinit var mMap: GoogleMap
-    private val nasugbuCenter = LatLng(14.0689, 120.6295)
+    private lateinit var mapView: MapView
+    private val nasugbuCenter = GeoPoint(14.0689, 120.6295)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Configuration.getInstance().load(applicationContext, PreferenceManager.getDefaultSharedPreferences(applicationContext))
+        Configuration.getInstance().userAgentValue = packageName
         setContentView(R.layout.activity_service_zone)
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.adminZoneMap) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+        mapView = findViewById(R.id.adminZoneMap)
+        mapView.setTileSource(TileSourceFactory.MAPNIK)
+        mapView.setMultiTouchControls(true)
+        mapView.controller.setZoom(14.0)
+        mapView.controller.setCenter(nasugbuCenter)
 
         val switchZonesBoundary = findViewById<SwitchCompat?>(R.id.switchZonesBoundary)
         val switchActiveAvailability = findViewById<SwitchCompat?>(R.id.switchActiveAvailability)
@@ -49,8 +53,13 @@ class ServiceZoneActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nasugbuCenter, 14f))
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
     }
 }

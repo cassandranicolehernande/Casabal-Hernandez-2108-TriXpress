@@ -2,13 +2,11 @@
 
 package com.example.trixpress
 
-// Interface enforcing SRP and ISP contracts (OOP Concepts & SOLID)
 interface Bookable {
     fun createBooking(pickup: String, dropoff: String): Boolean
     fun cancelBooking(bookingId: String): Boolean
 }
 
-// Abstract Superclass demonstrating Abstraction & Encapsulation
 abstract class User(
     val uid: String,
     var fullName: String,
@@ -18,7 +16,6 @@ abstract class User(
     abstract fun getDashboardTitle(): String
 }
 
-// Concrete subclass Passenger extending User (Inheritance & Polymorphism)
 class Passenger(
     uid: String,
     fullName: String,
@@ -31,7 +28,7 @@ class Passenger(
     }
 }
 
-// Concrete subclass Driver extending User (Inheritance & Polymorphism)
+
 class Driver(
     uid: String,
     fullName: String,
@@ -46,7 +43,6 @@ class Driver(
     }
 }
 
-// Domain Model for Booking implementing Bookable interface
 data class Booking(
     val bookingId: String,
     val passengerName: String,
@@ -65,7 +61,6 @@ data class Booking(
     }
 }
 
-// Domain Model for Completed Trips
 data class Trip(
     val tripId: String,
     val driverName: String,

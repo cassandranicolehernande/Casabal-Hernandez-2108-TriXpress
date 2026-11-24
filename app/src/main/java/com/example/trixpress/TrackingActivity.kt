@@ -144,6 +144,12 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
             launchNativeGoogleMapsNavigation()
         }
 
+        // Automatically launch official Google Maps app directly for turn-by-turn navigation!
+        try {
+            launchNativeGoogleMapsNavigation()
+        } catch (_: Exception) {
+        }
+
         fabTrackingMapLayer.setOnClickListener {
             if (::mMap.isInitialized) {
                 if (mMap.mapType == GoogleMap.MAP_TYPE_HYBRID) {

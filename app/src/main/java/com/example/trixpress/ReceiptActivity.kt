@@ -56,7 +56,7 @@ class ReceiptActivity : AppCompatActivity() {
             btnBackToDashboard?.setOnClickListener {
                 // Save completed ride to driver trip history
                 try {
-                    val prefs = getSharedPreferences("TriXpressHistory", Context.MODE_PRIVATE)
+                    val prefs = getSharedPreferences("DriverTripHistory", Context.MODE_PRIVATE)
                     val existingStr = prefs.getString("SAVED_TRIPS", "[]") ?: "[]"
                     val jsonArray = JSONArray(existingStr)
 
@@ -73,7 +73,7 @@ class ReceiptActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
 
-                Toast.makeText(this, "Ride completed and saved to Recent Trip History!", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Ride completed and saved to Driver Trip History!", Toast.LENGTH_LONG).show()
 
                 val intent = Intent(this, DriverDashboardActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK

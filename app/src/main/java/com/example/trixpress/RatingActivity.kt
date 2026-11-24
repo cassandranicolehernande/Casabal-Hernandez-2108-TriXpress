@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.Locale
 
 class RatingActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,9 +29,9 @@ class RatingActivity : AppCompatActivity() {
         btnSubmitRating.setOnClickListener {
             val rating = ratingBar.rating
 
-            // Save completed trip to Trip History SharedPreferences
+            // Save completed trip specifically to Passenger Trip History SharedPreferences
             try {
-                val prefs = getSharedPreferences("TriXpressHistory", Context.MODE_PRIVATE)
+                val prefs = getSharedPreferences("PassengerTripHistory", Context.MODE_PRIVATE)
                 val existingStr = prefs.getString("SAVED_TRIPS", "[]") ?: "[]"
                 val jsonArray = JSONArray(existingStr)
 
@@ -39,7 +40,7 @@ class RatingActivity : AppCompatActivity() {
                     put("pickup", pickupLoc)
                     put("dest", destLoc)
                     put("fare", fare)
-                    put("rating", String.format("%.1f", if (rating > 0) rating else 5.0f))
+                    put("rating", String.format(Locale.getDefault(), "%.1f", if (rating > 0) rating else 5.0f))
                 }
                 jsonArray.put(tripObj)
 
@@ -48,7 +49,7 @@ class RatingActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
 
-            Toast.makeText(this, "Salamat sa feedback mo! Saved to Trip History. ⭐️", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Salamat sa feedback mo! Saved to Passenger Trip History. ⭐️", Toast.LENGTH_LONG).show()
 
             val intent = Intent(this, PassengerDashboardActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

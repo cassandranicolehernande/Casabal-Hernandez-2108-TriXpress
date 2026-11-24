@@ -253,7 +253,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="+₱10"
+                    android:text="₱10"
                     android:textColor="#1A237E"
                     android:textStyle="bold" />
 
@@ -264,7 +264,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="+₱20"
+                    android:text="₱20"
                     android:textColor="#1A237E"
                     android:textStyle="bold" />
 
@@ -275,7 +275,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:backgroundTint="#FFFFFF"
-                    android:text="+₱50"
+                    android:text="₱50"
                     android:textColor="#1A237E"
                     android:textStyle="bold" />
 
@@ -285,7 +285,7 @@
                     android:layout_height="42dp"
                     android:layout_weight="1"
                     android:backgroundTint="#FFFFFF"
-                    android:text="+₱100"
+                    android:text="₱100"
                     android:textColor="#1A237E"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -411,7 +411,6 @@
                 android:textColor="#D32F2F" />
         </LinearLayout>
 
-        <!-- Angkas-Style Service Selector Card (Taps to open dialog_service_type_picker.xml) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardServiceSelector"
             android:layout_width="match_parent"
@@ -446,7 +445,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="99.9% TODA Safety Rating • Angkas Style"
+                        android:text="99.9% TODA Safety Rating for Driver"
                         android:textColor="#E0E0E0"
                         android:textSize="11sp" />
                 </LinearLayout>

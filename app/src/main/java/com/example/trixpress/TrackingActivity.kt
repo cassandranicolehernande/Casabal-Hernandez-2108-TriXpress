@@ -45,24 +45,36 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var pickupLoc: String
     private lateinit var destLoc: String
+    private var isDriver = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
 
+        isDriver = intent.getBooleanExtra("IS_DRIVER", false)
         val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (ARASOF TODA)"
-        pickupLoc = intent.getStringExtra("PICKUP_LOC") ?: "Current Live GPS Location"
+        pickupLoc = intent.getStringExtra("PICKUP_LOC") ?: "BatStateU ARASOF - Nasugbu Campus"
         destLoc = intent.getStringExtra("DEST_LOC") ?: "Nasugbu Public Market"
         val estFare = intent.getStringExtra("EST_FARE") ?: "₱50.00"
         val notes = intent.getStringExtra("DRIVER_NOTES") ?: ""
 
-        val pLat = intent.getDoubleExtra("PICKUP_LAT", 14.07280)
-        val pLng = intent.getDoubleExtra("PICKUP_LNG", 120.63250)
-        val dLat = intent.getDoubleExtra("DEST_LAT", 14.07520)
-        val dLng = intent.getDoubleExtra("DEST_LNG", 120.63580)
+        val hasPickupCoords = intent.hasExtra("PICKUP_LAT") && intent.getDoubleExtra("PICKUP_LAT", 0.0) != 0.0
+        val hasDestCoords = intent.hasExtra("DEST_LAT") && intent.getDoubleExtra("DEST_LAT", 0.0) != 0.0
 
-        pickupLocation = LatLng(pLat, pLng)
-        destinationLocation = LatLng(dLat, dLng)
+        val resolvedPickupLatLng = if (hasPickupCoords) {
+            LatLng(intent.getDoubleExtra("PICKUP_LAT", 14.0673), intent.getDoubleExtra("PICKUP_LNG", 120.6262))
+        } else {
+            NasugbuLocations.findCoordinatesByName(pickupLoc)
+        }
+
+        val resolvedDestLatLng = if (hasDestCoords) {
+            LatLng(intent.getDoubleExtra("DEST_LAT", 14.0754), intent.getDoubleExtra("DEST_LNG", 120.6358))
+        } else {
+            NasugbuLocations.findCoordinatesByName(destLoc)
+        }
+
+        pickupLocation = resolvedPickupLatLng
+        destinationLocation = resolvedDestLatLng
         routePoints = generateDynamicRoutePath(pickupLocation, destinationLocation)
 
         val mapFragment = supportFragmentManager
@@ -78,9 +90,17 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         val btnOpenGoogleMapsApp = findViewById<Button>(R.id.btnOpenGoogleMapsApp)
         val fabTrackingMapLayer = findViewById<FloatingActionButton>(R.id.fabTrackingMapLayer)
 
-        tvTripStatusTitle.text = "🛺 Driver En Route to Pick-up"
-        tvTrackingDriver.text = "Driver: $driverName\nRoute: $pickupLoc ➔ $destLoc\nNote: ${notes.ifEmpty { "None" }}"
-        tvEstimatedTime.text = "Estimated Arrival: 3 mins"
+        if (isDriver) {
+            tvTripStatusTitle.text = "🛺 Driver Dispatch: Passenger Locations"
+            tvTrackingDriver.text = "Passenger Request\nPick-up: $pickupLoc\nDrop-off: $destLoc"
+            tvTrackingInstruction.text = "Exact locations given by passenger. Tap Google Maps App for turn-by-turn navigation."
+            tvEstimatedTime.text = "Fare: $estFare • Note: ${notes.ifEmpty { "None" }}"
+            btnActionTrip.text = "Complete Trip & Save to History"
+        } else {
+            tvTripStatusTitle.text = "🛺 En Route to Destination"
+            tvTrackingDriver.text = "Driver: $driverName\nRoute: $pickupLoc ➔ $destLoc\nNote: ${notes.ifEmpty { "None" }}"
+            tvEstimatedTime.text = "Estimated Arrival: 3 mins"
+        }
 
         btnOpenGoogleMapsApp.setOnClickListener {
             launchNativeGoogleMapsNavigation()
@@ -103,26 +123,17 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         btnActionTrip.setOnClickListener {
-            if (tripPhase == 1) {
-                tripPhase = 2
-                tvTripStatusTitle.text = "🛺 En Route to $destLoc"
-                tvTrackingInstruction.text = "Navigating from $pickupLoc to $destLoc..."
-                tvEstimatedTime.text = "Estimated Arrival: 4 mins"
-                btnActionTrip.text = "Complete Trip & View Receipt"
-                Toast.makeText(this, "Driver confirmed arrival! En route to destination.", Toast.LENGTH_SHORT).show()
-                startRoadFollowingDriverMovement()
-            } else {
-                handler.removeCallbacksAndMessages(null)
-                Toast.makeText(this, "Trip Completed Successfully!", Toast.LENGTH_SHORT).show()
-                val nextIntent = Intent(this, ReceiptActivity::class.java).apply {
-                    putExtra("DRIVER_NAME", driverName)
-                    putExtra("PICKUP_LOC", pickupLoc)
-                    putExtra("DEST_LOC", destLoc)
-                    putExtra("EST_FARE", estFare)
-                }
-                startActivity(nextIntent)
-                finish()
+            handler.removeCallbacksAndMessages(null)
+            Toast.makeText(this, "Trip Completed Successfully!", Toast.LENGTH_SHORT).show()
+            val nextIntent = Intent(this, ReceiptActivity::class.java).apply {
+                putExtra("DRIVER_NAME", driverName)
+                putExtra("PICKUP_LOC", pickupLoc)
+                putExtra("DEST_LOC", destLoc)
+                putExtra("EST_FARE", estFare)
+                putExtra("IS_DRIVER", isDriver)
             }
+            startActivity(nextIntent)
+            finish()
         }
     }
 
@@ -162,13 +173,17 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         redrawPolyline(routePoints)
         zoomToFitRoute(routePoints)
 
-        val initialDriverPos = routePoints.first()
-        driverMarker = mMap.addMarker(
-            MarkerOptions()
-                .position(initialDriverPos)
-                .title("🛺 Kuya Roberto (Active Driver)")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-        )
+        if (!isDriver) {
+            val initialDriverPos = routePoints.first()
+            driverMarker = mMap.addMarker(
+                MarkerOptions()
+                    .position(initialDriverPos)
+                    .title("🛺 Kuya Roberto (Active Driver)")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            )
+            // Automatically start moving towards destination immediately upon opening!
+            startRoadFollowingDriverMovement()
+        }
     }
 
     private fun redrawPolyline(points: List<LatLng>) {

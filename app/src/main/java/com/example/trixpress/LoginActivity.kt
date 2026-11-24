@@ -119,6 +119,7 @@ class LoginActivity : AppCompatActivity() {
 
     // SHOW REAL OTP DIALOG
     private fun showRealOtpDialog(phoneNumber: String, rgRole: RadioGroup?) {
+        if (isFinishing || isDestroyed) return
         val dialogView = layoutInflater.inflate(R.layout.dialog_otp_verification, null)
         val tvOtpMessage = dialogView.findViewById<TextView>(R.id.tvOtpMessage)
         val etOtpInput = dialogView.findViewById<EditText>(R.id.etOtpInput)
@@ -150,8 +151,12 @@ class LoginActivity : AppCompatActivity() {
             dialog.dismiss()
         }
 
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+        try {
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun signInWithPhoneCredential(credential: PhoneAuthCredential, rgRole: RadioGroup?, phoneNumber: String) {

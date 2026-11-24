@@ -1,9 +1,11 @@
 package com.example.trixpress
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.location.Geocoder
 import android.location.Location
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -13,9 +15,11 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.LocationServices
@@ -26,37 +30,6 @@ import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class SearchDropoffActivity : AppCompatActivity() {
-
-    private val nasugbuLandmarks = arrayOf(
-        "BatStateU ARASOF - Nasugbu Campus",
-        "Nasugbu East Central School",
-        "Nasugbu West Central School",
-        "Bunducan Elementary School",
-        "Looc National High School",
-        "Nasugbu Municipal Hall",
-        "Nasugbu Town Plaza",
-        "St. Francis Xavier Parish Church",
-        "Nasugbu Police & Fire Station",
-        "Nasugbu Public Market",
-        "Jollibee Nasugbu Crossing",
-        "Waltermart Nasugbu",
-        "Savemore Market Nasugbu",
-        "Nasugbu Grand Bus & Van Terminal",
-        "Apacible Memorial District Hospital (Lumbangan)",
-        "Wawa Port / Nasugbu Fish Port",
-        "Bucana Beach / Nasugbu Baywalk",
-        "Apacible Blvd / White Beach",
-        "Natipuan Beach",
-        "Terrazas / Peninsula de Punta Fuego",
-        "Tali Beach (Balaytigui)",
-        "Calayo Beach Resort",
-        "Pico de Loro Cove / Hamilo Coast",
-        "Central Azucarera Don Pedro (CADPI)",
-        "Ternate-Nasugbu Highway Junction",
-        "Kaybiang Tunnel Boundary",
-        "East-West Road View Deck (Kaylaway)",
-        "Caleruega / Tagaytay-Nasugbu Border"
-    )
 
     private lateinit var etPickup: AutoCompleteTextView
     private lateinit var etDropoff: AutoCompleteTextView
@@ -72,10 +45,12 @@ class SearchDropoffActivity : AppCompatActivity() {
     private lateinit var btnAttachParcelPhoto: Button
     private lateinit var tvPhotoStatus: TextView
     private lateinit var rgServiceType: RadioGroup
+    private lateinit var ivParcelPreview: ImageView
 
     private var baseFare = 50.0
     private var selectedTip = 0.0
     private var isPhotoAttached = false
+    private var selectedParcelUri: Uri? = null
 
     private var currentGpsLatLng = LatLng(14.0673, 120.6262) // Default BatStateU ARASOF fallback
 
@@ -97,6 +72,39 @@ class SearchDropoffActivity : AppCompatActivity() {
         btnAttachParcelPhoto = findViewById(R.id.btnAttachParcelPhoto)
         tvPhotoStatus = findViewById(R.id.tvPhotoStatus)
         rgServiceType = findViewById(R.id.rgServiceType)
+        ivParcelPreview = findViewById(R.id.ivParcelPreview)
+
+        val cardServiceSelector = findViewById<com.google.android.material.card.MaterialCardView>(R.id.cardServiceSelector)
+        val tvSelectedServiceLabel = findViewById<TextView>(R.id.tvSelectedServiceLabel)
+
+        cardServiceSelector.setOnClickListener {
+            val dialogView = layoutInflater.inflate(R.layout.dialog_service_type_picker, null)
+            val dialog = AlertDialog.Builder(this)
+                .setView(dialogView)
+                .create()
+
+            dialogView.findViewById<View>(R.id.btnCloseServiceDialog)?.setOnClickListener { dialog.dismiss() }
+            dialogView.findViewById<View>(R.id.cardServiceTricycle)?.setOnClickListener {
+                tvSelectedServiceLabel.text = "🛺 Individual Ride >"
+                rgServiceType.check(R.id.rbServiceRide)
+                dialog.dismiss()
+                Toast.makeText(this, "Selected: Individual Ride", Toast.LENGTH_SHORT).show()
+            }
+            dialogView.findViewById<View>(R.id.cardServicePadala)?.setOnClickListener {
+                tvSelectedServiceLabel.text = "📦 Express Parcel Delivery >"
+                rgServiceType.check(R.id.rbServiceDelivery)
+                dialog.dismiss()
+                Toast.makeText(this, "Selected: Express Parcel Delivery", Toast.LENGTH_SHORT).show()
+            }
+            dialogView.findViewById<View>(R.id.cardServicePakyaw)?.setOnClickListener {
+                tvSelectedServiceLabel.text = "👑 Group Pakyaw Charter >"
+                rgServiceType.check(R.id.rbServicePakyaw)
+                dialog.dismiss()
+                Toast.makeText(this, "Selected: Group Pakyaw Charter", Toast.LENGTH_SHORT).show()
+            }
+
+            dialog.show()
+        }
 
         // Automatically fetch live GPS location as pickup on startup
         etPickup.isEnabled = false
@@ -130,10 +138,20 @@ class SearchDropoffActivity : AppCompatActivity() {
         findViewById<Button>(R.id.chipMarketBag).setOnClickListener { etDriverNotes.setText("May dala pong market sacks/bags, paki-tulungan po.") }
         findViewById<Button>(R.id.chipCorner).setOnClickListener { etDriverNotes.setText("Malapit na po ako sa kanto.") }
 
+        // Gallery Launcher for Parcel / Pasalubong Photo with Visible Preview
+        val parcelLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                selectedParcelUri = uri
+                isPhotoAttached = true
+                ivParcelPreview.setImageURI(uri)
+                ivParcelPreview.visibility = View.VISIBLE
+                tvPhotoStatus.text = "📷 Parcel Photo Attached & Visible"
+                Toast.makeText(this, "Parcel photo attached successfully!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         btnAttachParcelPhoto.setOnClickListener {
-            isPhotoAttached = true
-            tvPhotoStatus.text = "📷 Parcel Photo Attached (Ready for Driver Sizing)"
-            Toast.makeText(this, "Parcel photo attached successfully!", Toast.LENGTH_SHORT).show()
+            parcelLauncher.launch("image/*")
         }
 
         val btnTip10 = findViewById<Button>(R.id.btnTip10)
@@ -160,18 +178,21 @@ class SearchDropoffActivity : AppCompatActivity() {
                     layoutPassengerCount.visibility = View.VISIBLE
                     layoutParcelDetails.visibility = View.GONE
                     baseFare = 120.0
+                    tvSelectedServiceLabel.text = "👑 Group Pakyaw Charter >"
                     Toast.makeText(this, "Pakyaw Charter Selected: Choose passenger count", Toast.LENGTH_SHORT).show()
                 }
                 R.id.rbServiceDelivery -> {
                     layoutPassengerCount.visibility = View.GONE
                     layoutParcelDetails.visibility = View.VISIBLE
                     baseFare = 65.0
+                    tvSelectedServiceLabel.text = "📦 Express Parcel Delivery >"
                     Toast.makeText(this, "Express Parcel Delivery Selected: Type details & attach photo", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
                     layoutPassengerCount.visibility = View.GONE
                     layoutParcelDetails.visibility = View.GONE
                     baseFare = 50.0
+                    tvSelectedServiceLabel.text = "🛺 Individual Ride >"
                 }
             }
             recalculateTotalFare()
@@ -252,7 +273,25 @@ class SearchDropoffActivity : AppCompatActivity() {
             val pickupLatLng = currentGpsLatLng
             val dropoffLatLng = getLatLngForLandmark(dropoff)
 
-            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupLatLng, dropoffLatLng)
+            val activePrefs = getSharedPreferences("TriXpressActiveBooking", Context.MODE_PRIVATE)
+            activePrefs.edit().apply {
+                putString("passengerName", "Juan Dela Cruz")
+                putString("pickupLoc", pickup)
+                putFloat("pickupLat", pickupLatLng.latitude.toFloat())
+                putFloat("pickupLng", pickupLatLng.longitude.toFloat())
+                putString("destLoc", dropoff)
+                putFloat("destLat", dropoffLatLng.latitude.toFloat())
+                putFloat("destLng", dropoffLatLng.longitude.toFloat())
+                putString("fare", totalFare)
+                putString("serviceType", serviceType)
+                putString("bookingMode", mode)
+                putString("notes", finalNotes)
+                putString("parcelUri", selectedParcelUri?.toString())
+                putBoolean("hasBooking", true)
+                apply()
+            }
+
+            startLookingForDriverSequence(pickup, dropoff, serviceType, mode, totalFare, finalNotes, pickupLatLng, dropoffLatLng, selectedParcelUri?.toString())
         }
 
         recalculateTotalFare()
@@ -321,7 +360,8 @@ class SearchDropoffActivity : AppCompatActivity() {
         fare: String,
         notes: String,
         pickupLatLng: LatLng,
-        dropoffLatLng: LatLng
+        dropoffLatLng: LatLng,
+        parcelUri: String?
     ) {
         val dialogView = layoutInflater.inflate(R.layout.dialog_searching_driver, null)
         val tvStatus = dialogView.findViewById<TextView>(R.id.tvSearchStatus)
@@ -362,6 +402,7 @@ class SearchDropoffActivity : AppCompatActivity() {
                     putExtra("BOOKING_MODE", mode)
                     putExtra("EST_FARE", fare)
                     putExtra("DRIVER_NOTES", notes)
+                    putExtra("PARCEL_IMAGE_URI", parcelUri)
                 }
                 startActivity(intent)
                 finish()

@@ -1,14 +1,17 @@
 package com.example.trixpress
 
+import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.toColorInt
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -38,24 +41,26 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private var driverMarker: Marker? = null
     private val handler = Handler(Looper.getMainLooper())
+    private var isDriver = false
+
     private var pointIndex = 0
     private var subStep = 0
     private val totalSubStepsPerSegment = 4
-    private var tripPhase = 1
 
     private lateinit var pickupLoc: String
     private lateinit var destLoc: String
-    private var isDriver = false
+    private lateinit var driverName: String
+    private lateinit var estFare: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
 
         isDriver = intent.getBooleanExtra("IS_DRIVER", false)
-        val driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (ARASOF TODA)"
+        driverName = intent.getStringExtra("DRIVER_NAME") ?: "Kuya Roberto (ARASOF TODA)"
         pickupLoc = intent.getStringExtra("PICKUP_LOC") ?: "BatStateU ARASOF - Nasugbu Campus"
         destLoc = intent.getStringExtra("DEST_LOC") ?: "Nasugbu Public Market"
-        val estFare = intent.getStringExtra("EST_FARE") ?: "₱50.00"
+        estFare = intent.getStringExtra("EST_FARE") ?: "₱50.00"
         val notes = intent.getStringExtra("DRIVER_NOTES") ?: ""
 
         val hasPickupCoords = intent.hasExtra("PICKUP_LAT") && intent.getDoubleExtra("PICKUP_LAT", 0.0) != 0.0
@@ -90,16 +95,49 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         val btnOpenGoogleMapsApp = findViewById<Button>(R.id.btnOpenGoogleMapsApp)
         val fabTrackingMapLayer = findViewById<FloatingActionButton>(R.id.fabTrackingMapLayer)
 
+        val layoutPassengerTrackingControls = findViewById<View>(R.id.layoutPassengerTrackingControls)
+        val btnContinueTracking = findViewById<Button>(R.id.btnContinueTracking)
+        val btnCancelTracking = findViewById<Button>(R.id.btnCancelTracking)
+
         if (isDriver) {
             tvTripStatusTitle.text = "🛺 Driver Dispatch: Passenger Locations"
             tvTrackingDriver.text = "Passenger Request\nPick-up: $pickupLoc\nDrop-off: $destLoc"
             tvTrackingInstruction.text = "Exact locations given by passenger. Tap Google Maps App for turn-by-turn navigation."
             tvEstimatedTime.text = "Fare: $estFare • Note: ${notes.ifEmpty { "None" }}"
             btnActionTrip.text = "Complete Trip & Save to History"
+            btnActionTrip.visibility = View.VISIBLE
+            layoutPassengerTrackingControls.visibility = View.GONE
         } else {
             tvTripStatusTitle.text = "🛺 En Route to Destination"
             tvTrackingDriver.text = "Driver: $driverName\nRoute: $pickupLoc ➔ $destLoc\nNote: ${notes.ifEmpty { "None" }}"
             tvEstimatedTime.text = "Estimated Arrival: 3 mins"
+            btnActionTrip.visibility = View.GONE
+            layoutPassengerTrackingControls.visibility = View.VISIBLE
+        }
+
+        btnContinueTracking.setOnClickListener {
+            Toast.makeText(this, "Active trip continuing...", Toast.LENGTH_SHORT).show()
+        }
+
+        btnCancelTracking.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Cancel Booking?")
+                .setMessage("Are you sure you want to cancel this active booking with $driverName?")
+                .setPositiveButton("Yes, Cancel Booking") { _, _ ->
+                    val activePrefs = getSharedPreferences("TriXpressActiveBooking", Context.MODE_PRIVATE)
+                    activePrefs.edit().clear().apply()
+
+                    Toast.makeText(this, "Booking cancelled", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, PassengerDashboardActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
+                    finish()
+                }
+                .setNegativeButton("Keep Ride") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
         }
 
         btnOpenGoogleMapsApp.setOnClickListener {
@@ -178,10 +216,9 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
             driverMarker = mMap.addMarker(
                 MarkerOptions()
                     .position(initialDriverPos)
-                    .title("🛺 Kuya Roberto (Active Driver)")
+                    .title("🛺 $driverName (Active Driver)")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
-            // Automatically start moving towards destination immediately upon opening!
             startRoadFollowingDriverMovement()
         }
     }
@@ -254,6 +291,21 @@ class TrackingActivity : AppCompatActivity(), OnMapReadyCallback {
                         driverMarker?.position = destinationLocation
                         findViewById<TextView>(R.id.tvEstimatedTime).text = "Arrived at destination!"
                         Toast.makeText(this@TrackingActivity, "You have arrived at your destination!", Toast.LENGTH_LONG).show()
+
+                        // Automatically transition passenger to Receipt / Rating screen upon arrival
+                        handler.postDelayed({
+                            if (!isFinishing) {
+                                val nextIntent = Intent(this@TrackingActivity, ReceiptActivity::class.java).apply {
+                                    putExtra("DRIVER_NAME", driverName)
+                                    putExtra("PICKUP_LOC", pickupLoc)
+                                    putExtra("DEST_LOC", destLoc)
+                                    putExtra("EST_FARE", estFare)
+                                    putExtra("IS_DRIVER", isDriver)
+                                }
+                                startActivity(nextIntent)
+                                finish()
+                            }
+                        }, 1500)
                     }
                 }
             }

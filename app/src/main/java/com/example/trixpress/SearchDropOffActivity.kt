@@ -52,8 +52,6 @@ class SearchDropoffActivity : AppCompatActivity() {
     private var isPhotoAttached = false
     private var selectedParcelUri: Uri? = null
 
-    private var currentGpsLatLng = LatLng(14.0673, 120.6262) // Default BatStateU ARASOF fallback
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_dropoff)
@@ -106,24 +104,36 @@ class SearchDropoffActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        // Automatically fetch live GPS location as pickup on startup
-        etPickup.isEnabled = false
-        etPickup.setText("📍 BatStateU ARASOF - Nasugbu Campus (GPS)", false)
+        // Freely selectable pick-up location with auto-suggestions (No forced BSU default)
+        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, NasugbuLocations.allPlaceNames)
+        etPickup.setAdapter(adapter)
+        etPickup.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
+        etPickup.isEnabled = true
+        etPickup.isFocusable = true
+        etPickup.isFocusableInTouchMode = true
+        etPickup.setOnClickListener { etPickup.showDropDown() }
 
+        // Attempt initial live GPS fill for pickup, but allow full freedom to type/change
         try {
             val fusedClient = LocationServices.getFusedLocationProviderClient(this)
             fusedClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    currentGpsLatLng = LatLng(location.latitude, location.longitude)
                     lifecycleScope.launch {
-                        val addressName = getAddressNameFromLatLng(currentGpsLatLng)
-                        etPickup.setText(addressName, false)
+                        val addressName = getAddressNameFromLatLng(LatLng(location.latitude, location.longitude))
+                        if (etPickup.text.isNullOrEmpty() || etPickup.text.toString().startsWith("📍")) {
+                            etPickup.setText(addressName, false)
+                        }
                     }
                 }
             }
         } catch (e: SecurityException) {
             e.printStackTrace()
         }
+
+        // Dropoff adapter setup
+        etDropoff.setAdapter(adapter)
+        etDropoff.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
+        etDropoff.setOnClickListener { etDropoff.showDropDown() }
 
         // Frequent Places Chips for Drop-off
         findViewById<Button>(R.id.chipHome).setOnClickListener { etDropoff.setText("Nasugbu Town Plaza", false) }
@@ -207,18 +217,12 @@ class SearchDropoffActivity : AppCompatActivity() {
         cbUmbrella.setOnCheckedChangeListener { _, _ -> recalculateTotalFare() }
         cbInsurance.setOnCheckedChangeListener { _, _ -> recalculateTotalFare() }
 
-        val adapter = ArrayAdapter(this, R.layout.item_dropdown_suggestion, NasugbuLocations.allPlaceNames)
-        etDropoff.setAdapter(adapter)
-        etDropoff.setDropDownBackgroundResource(R.drawable.bg_dropdown_item)
-
-        etDropoff.setOnClickListener { etDropoff.showDropDown() }
-
         val rgRideMode = findViewById<RadioGroup>(R.id.rgRideMode)
         val btnConfirmBooking = findViewById<Button>(R.id.btnConfirmBooking)
         val btnSearchInGoogleMaps = findViewById<Button>(R.id.btnSearchInGoogleMaps)
 
         btnSearchInGoogleMaps?.setOnClickListener {
-            val pickup = etPickup.text.toString().trim()
+            val pickup = etPickup.text.toString().trim().ifEmpty { "Nasugbu Town Plaza" }
             val dropoff = etDropoff.text.toString().trim().ifEmpty { "Nasugbu Public Market" }
             val mapsUri = android.net.Uri.parse(
                 "https://www.google.com/maps/dir/?api=1&origin=${android.net.Uri.encode(pickup)}&destination=${android.net.Uri.encode(dropoff)}&travelmode=driving"
@@ -235,6 +239,11 @@ class SearchDropoffActivity : AppCompatActivity() {
             val dropoff = etDropoff.text.toString().trim()
             val notes = etDriverNotes.text.toString().trim()
             val parcelDesc = etParcelDescription.text.toString().trim()
+
+            if (pickup.isEmpty()) {
+                Toast.makeText(this, "Please enter or select your pick-up location", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
             if (dropoff.isEmpty()) {
                 Toast.makeText(this, "Please enter your drop-off destination", Toast.LENGTH_SHORT).show()
@@ -270,8 +279,8 @@ class SearchDropoffActivity : AppCompatActivity() {
             val mode = if (rgRideMode.checkedRadioButtonId == R.id.rbGroup) "Group" else "Individual Passenger"
             val totalFare = tvEstimatedFare.text.toString()
 
-            val pickupLatLng = currentGpsLatLng
-            val dropoffLatLng = getLatLngForLandmark(dropoff)
+            val pickupLatLng = NasugbuLocations.findCoordinatesByName(pickup)
+            val dropoffLatLng = NasugbuLocations.findCoordinatesByName(dropoff)
 
             val activePrefs = getSharedPreferences("TriXpressActiveBooking", Context.MODE_PRIVATE)
             activePrefs.edit().apply {
@@ -312,10 +321,6 @@ class SearchDropoffActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return@withContext NasugbuLocations.findNearestPlaceName(latLng.latitude, latLng.longitude)
-    }
-
-    private fun getLatLngForLandmark(name: String): LatLng {
-        return NasugbuLocations.findCoordinatesByName(name)
     }
 
     private fun recalculateTotalFare() {

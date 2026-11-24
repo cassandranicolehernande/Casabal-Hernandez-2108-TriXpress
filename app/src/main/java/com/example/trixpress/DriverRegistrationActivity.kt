@@ -21,6 +21,8 @@ class DriverRegistrationActivity : AppCompatActivity() {
 
     private var currentDriverPhotoUri: Uri? = null
     private var currentTricyclePhotoUri: Uri? = null
+    private var currentLicenseFrontUri: Uri? = null
+    private var currentLicenseBackUri: Uri? = null
 
     private val nasugbuTodas = arrayOf(
         "ARASOF Campus TODA",
@@ -63,6 +65,14 @@ class DriverRegistrationActivity : AppCompatActivity() {
         val etSeater = findViewById<EditText>(R.id.etSeaterCapacity)
         val etPlate = findViewById<EditText>(R.id.etPlateNumber)
 
+        val ivLicenseFrontPreview = findViewById<ImageView>(R.id.ivLicenseFrontPreview)
+        val btnUploadLicenseFront = findViewById<Button>(R.id.btnUploadLicenseFront)
+        val tvLicenseFrontStatus = findViewById<TextView>(R.id.tvLicenseFrontStatus)
+
+        val ivLicenseBackPreview = findViewById<ImageView>(R.id.ivLicenseBackPreview)
+        val btnUploadLicenseBack = findViewById<Button>(R.id.btnUploadLicenseBack)
+        val tvLicenseBackStatus = findViewById<TextView>(R.id.tvLicenseBackStatus)
+
         val iv2x2Preview = findViewById<ImageView>(R.id.iv2x2Preview)
         val btnUploadDriver2x2 = findViewById<Button>(R.id.btnUploadDriver2x2)
         val tvDriver2x2Status = findViewById<TextView>(R.id.tvDriver2x2Status)
@@ -104,6 +114,28 @@ class DriverRegistrationActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        // License Front Launcher with Preview
+        val licenseFrontLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                currentLicenseFrontUri = uri
+                ivLicenseFrontPreview.setImageURI(uri)
+                ivLicenseFrontPreview.visibility = View.VISIBLE
+                tvLicenseFrontStatus.text = "💳 Front of License attached & verified"
+                Toast.makeText(this, "Front of License Attached!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // License Back Launcher with Preview
+        val licenseBackLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                currentLicenseBackUri = uri
+                ivLicenseBackPreview.setImageURI(uri)
+                ivLicenseBackPreview.visibility = View.VISIBLE
+                tvLicenseBackStatus.text = "💳 Back of License attached & verified"
+                Toast.makeText(this, "Back of License Attached!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         // Driver 2x2 Photo Image Launcher with Visible Preview
         val driverImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
@@ -126,6 +158,8 @@ class DriverRegistrationActivity : AppCompatActivity() {
             }
         }
 
+        btnUploadLicenseFront.setOnClickListener { licenseFrontLauncher.launch("image/*") }
+        btnUploadLicenseBack.setOnClickListener { licenseBackLauncher.launch("image/*") }
         btnUploadDriver2x2.setOnClickListener { driverImageLauncher.launch("image/*") }
         btnUploadTricyclePic.setOnClickListener { tricycleImageLauncher.launch("image/*") }
 
@@ -151,15 +185,26 @@ class DriverRegistrationActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (currentLicenseFrontUri == null || currentLicenseBackUri == null) {
+                Toast.makeText(this, "Please upload both front and back photos of your driver's license.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (currentDriverPhotoUri == null) {
+                Toast.makeText(this, "Please upload your 2x2 driver picture.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val fullName = listOf(firstName, middleName, lastName)
                 .filter { it.isNotBlank() }
                 .joinToString(" ")
 
-            // Save Driver Registration info locally into SharedPreferences
+            // Save Driver Registration info locally into SharedPreferences with PENDING_VERIFICATION status
             val prefs = getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
             prefs.edit().apply {
                 putBoolean("IS_LOGGED_IN", true)
                 putString("USER_ROLE", "DRIVER")
+                putString("DRIVER_STATUS", "PENDING_VERIFICATION")
                 putString("USER_NAME", fullName)
                 putString("DRIVER_NAME", fullName)
                 putString("USER_PHONE", contact)
@@ -171,12 +216,15 @@ class DriverRegistrationActivity : AppCompatActivity() {
                 apply()
             }
 
-            Toast.makeText(this, "Driver Profile Created & Registration Complete!", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Registration Submitted! Proceeding to Examination & Approval.", Toast.LENGTH_LONG).show()
 
-            val intent = Intent(this, DriverDashboardActivity::class.java).apply {
+            val intent = Intent(this, DriverPendingApprovalActivity::class.java).apply {
                 putExtra("DRIVER_NAME", fullName)
                 putExtra("DRIVER_TODA", toda)
                 putExtra("DRIVER_PLATE", plate)
+                putExtra("DRIVER_LICENSE", license)
+                putExtra("DRIVER_CONTACT", contact)
+                putExtra("TRICYCLE_TYPE", trikeType)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)

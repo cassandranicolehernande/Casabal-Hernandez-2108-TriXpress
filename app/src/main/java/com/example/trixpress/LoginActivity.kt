@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.InputType
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
@@ -25,13 +23,9 @@ import java.util.concurrent.TimeUnit
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-
     private var storedVerificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
-
-    private val prefs by lazy {
-        getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
-    }
+    private var isDriverRegistration = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,12 +43,25 @@ class LoginActivity : AppCompatActivity() {
         tvTrouble.paintFlags = tvTrouble.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 
         tvRegisterDriver?.setOnClickListener {
-            val intent = Intent(this, DriverRegistrationActivity::class.java)
-            startActivity(intent)
+            isDriverRegistration = true
+            val inputPhone = etPhone.text.toString().trim()
+            var phoneNumber = inputPhone.filter { it.isDigit() }
+            if (phoneNumber.startsWith("63")) phoneNumber = phoneNumber.substring(2)
+            if (phoneNumber.startsWith("0")) phoneNumber = phoneNumber.substring(1)
+
+            if (phoneNumber.matches(Regex("^9\\d{9}$"))) {
+                val formattedNumber = "+63$phoneNumber"
+                Toast.makeText(this, "Sending Driver Verification OTP to $formattedNumber...", Toast.LENGTH_SHORT).show()
+                sendRealSmsOtp(formattedNumber, rgRole)
+            } else {
+                val formattedNumber = "+639123456789"
+                showRealOtpDialog(formattedNumber, rgRole)
+            }
         }
 
         // PHONE NUMBER LOGIN (REAL FIREBASE SMS OTP)
         btnLogin.setOnClickListener {
+            isDriverRegistration = false
             val inputPhone = etPhone.text.toString().trim()
             var phoneNumber = inputPhone.filter { it.isDigit() }
 
@@ -67,7 +74,6 @@ class LoginActivity : AppCompatActivity() {
 
             if (phoneNumber.matches(Regex("^9\\d{9}$"))) {
                 val formattedNumber = "+63$phoneNumber"
-                // Instantly open the 6-digit OTP verification container immediately with zero delay!
                 showRealOtpDialog(formattedNumber, rgRole)
                 sendRealSmsOtp(formattedNumber, rgRole)
             } else {
@@ -83,8 +89,6 @@ class LoginActivity : AppCompatActivity() {
         tvEmailLogin.setOnClickListener {
             showEmailLoginDialog()
         }
-
-        handleEmailLink(intent)
     }
 
     // SEND REAL SMS OTP VIA FIREBASE PHONE AUTH
@@ -99,7 +103,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 override fun onVerificationFailed(e: FirebaseException) {
-                    Toast.makeText(baseContext, "Enter verification code", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Enter verification code received via SMS", Toast.LENGTH_SHORT).show()
                     showRealOtpDialog(phoneNumber, rgRole)
                 }
 
@@ -109,12 +113,17 @@ class LoginActivity : AppCompatActivity() {
                 ) {
                     storedVerificationId = verificationId
                     resendToken = token
-                    Toast.makeText(baseContext, "SMS OTP sent!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "SMS OTP sent successfully!", Toast.LENGTH_SHORT).show()
                     showRealOtpDialog(phoneNumber, rgRole)
                 }
             })
             .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
+        try {
+            PhoneAuthProvider.verifyPhoneNumber(options)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            showRealOtpDialog(phoneNumber, rgRole)
+        }
     }
 
     // SHOW REAL OTP DIALOG
@@ -137,11 +146,11 @@ class LoginActivity : AppCompatActivity() {
             if (code == "123456") {
                 Toast.makeText(this, "Phone verified successfully!", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
-                proceedAfterPhoneVerification(rgRole, phoneNumber)
+                proceedAfterPhoneVerification(phoneNumber)
             } else if (code.length == 6 && storedVerificationId != null) {
                 val credential = PhoneAuthProvider.getCredential(storedVerificationId!!, code)
                 dialog.dismiss()
-                signInWithPhoneCredential(credential, rgRole, phoneNumber)
+                signInWithPhoneCredential(credential, null, phoneNumber)
             } else {
                 Toast.makeText(this, "Please enter a valid 6-digit code or 123456.", Toast.LENGTH_SHORT).show()
             }
@@ -164,17 +173,26 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "Phone verified and signed in via Firebase!", Toast.LENGTH_SHORT).show()
-                    proceedAfterPhoneVerification(rgRole, phoneNumber)
+                    proceedAfterPhoneVerification(phoneNumber)
                 } else {
                     Toast.makeText(this, "Verification failed: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                 }
             }
     }
 
-    private fun proceedAfterPhoneVerification(rgRole: RadioGroup?, phoneNumber: String) {
-        val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
-        val intent = if (selectedRoleId == R.id.rbDriver) {
-            Intent(this, DriverRegistrationActivity::class.java)
+    private fun proceedAfterPhoneVerification(phoneNumber: String) {
+        val prefs = getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
+        val userRole = prefs.getString("USER_ROLE", "PASSENGER")
+        val driverStatus = prefs.getString("DRIVER_STATUS", "PENDING_VERIFICATION")
+
+        val intent = if (isDriverRegistration || userRole == "DRIVER") {
+            if (driverStatus == "ACCEPTED & REGISTERED") {
+                Intent(this, DriverDashboardActivity::class.java)
+            } else if (prefs.contains("DRIVER_NAME")) {
+                Intent(this, DriverPendingApprovalActivity::class.java)
+            } else {
+                Intent(this, DriverRegistrationActivity::class.java)
+            }
         } else {
             Intent(this, PassengerRegistrationActivity::class.java)
         }
@@ -200,92 +218,23 @@ class LoginActivity : AppCompatActivity() {
                     sendEmailLink(email)
                 }
             }
-            .setNegativeButton("CANCEL", null)
+            .setNegativeButton("Cancel", null)
             .show()
     }
 
     private fun sendEmailLink(email: String) {
         val actionCodeSettings = ActionCodeSettings.newBuilder()
             .setUrl("https://trixpress-a8f3c.firebaseapp.com/__/auth/links")
-            .setHandleCodeInApp(true)
             .setAndroidPackageName(packageName, true, null)
             .build()
 
         auth.sendSignInLinkToEmail(email, actionCodeSettings)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    prefs.edit().putString("EMAIL_FOR_SIGN_IN", email).apply()
-                    Toast.makeText(this, "Login link sent! Please check your email.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "Verification link sent to $email. Check your email!", Toast.LENGTH_LONG).show()
                 } else {
-                    Toast.makeText(this, "Proceeding with email verification ($email)", Toast.LENGTH_LONG).show()
-                    val rgRole = findViewById<RadioGroup>(R.id.rgRole)
-                    val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
-                    val nextIntent = if (selectedRoleId == R.id.rbDriver) {
-                        Intent(this, DriverRegistrationActivity::class.java)
-                    } else {
-                        Intent(this, PassengerRegistrationActivity::class.java)
-                    }
-                    nextIntent.putExtra("USER_EMAIL", email)
-                    startActivity(nextIntent)
-                    finish()
+                    Toast.makeText(this, "Failed to send email link: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                 }
             }
-    }
-
-    private fun handleEmailLink(intent: Intent?) {
-        val link = intent?.data?.toString() ?: return
-        if (!auth.isSignInWithEmailLink(link)) return
-        val savedEmail = prefs.getString("EMAIL_FOR_SIGN_IN", null)
-        if (savedEmail != null) {
-            completeEmailSignIn(savedEmail, link)
-        } else {
-            val input = EditText(this)
-            input.hint = "Enter your email address"
-            input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-
-            AlertDialog.Builder(this)
-                .setTitle("Confirm Your Email")
-                .setMessage("Enter the email address where you received the link.")
-                .setView(input)
-                .setPositiveButton("VERIFY") { _, _ ->
-                    val email = input.text.toString().trim().lowercase()
-                    if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                        completeEmailSignIn(email, link)
-                    } else {
-                        Toast.makeText(this, "Please enter a valid email address.", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("CANCEL", null)
-                .show()
-        }
-    }
-
-    private fun completeEmailSignIn(email: String, link: String) {
-        auth.signInWithEmailLink(email, link)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    prefs.edit().remove("EMAIL_FOR_SIGN_IN").apply()
-                    Toast.makeText(this, "Email verified successfully!", Toast.LENGTH_SHORT).show()
-
-                    val rgRole = findViewById<RadioGroup>(R.id.rgRole)
-                    val selectedRoleId = rgRole?.checkedRadioButtonId ?: R.id.rbPassenger
-                    val nextIntent = if (selectedRoleId == R.id.rbDriver) {
-                        Intent(this, DriverRegistrationActivity::class.java)
-                    } else {
-                        Intent(this, PassengerRegistrationActivity::class.java)
-                    }
-                    nextIntent.putExtra("USER_EMAIL", email)
-                    startActivity(nextIntent)
-                    finish()
-                } else {
-                    Toast.makeText(this, "Email verification failed: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
-                }
-            }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        handleEmailLink(intent)
     }
 }

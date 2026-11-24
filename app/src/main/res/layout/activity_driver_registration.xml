@@ -133,6 +133,68 @@
                 android:textColor="#000000"
                 android:textColorHint="@color/text_hint" />
 
+            <!-- Front of License Photo Upload -->
+            <ImageView
+                android:id="@+id/ivLicenseFrontPreview"
+                android:layout_width="140dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="6dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:contentDescription="License Front Preview" />
+
+            <android.widget.Button
+                android:id="@+id/btnUploadLicenseFront"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_btn_yellow"
+                android:text="💳 Upload Front of Driver's License"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLicenseFrontStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:gravity="center"
+                android:text="No front license photo attached"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp" />
+
+            <!-- Back of License Photo Upload -->
+            <ImageView
+                android:id="@+id/ivLicenseBackPreview"
+                android:layout_width="140dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="6dp"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                android:contentDescription="License Back Preview" />
+
+            <android.widget.Button
+                android:id="@+id/btnUploadLicenseBack"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="6dp"
+                android:background="@drawable/bg_btn_yellow"
+                android:text="💳 Upload Back of Driver's License"
+                android:textColor="#000000"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvLicenseBackStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="No back license photo attached"
+                android:textColor="@color/text_hint"
+                android:textSize="12sp" />
+
             <!-- Photo Upload with Preview -->
             <ImageView
                 android:id="@+id/iv2x2Preview"

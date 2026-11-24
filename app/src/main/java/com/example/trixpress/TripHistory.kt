@@ -23,7 +23,14 @@ class TripHistoryActivity : AppCompatActivity() {
             finish()
         }
 
-        val prefs = getSharedPreferences("TriXpressHistory", Context.MODE_PRIVATE)
+        // Determine if current logged-in user is a Driver or Passenger
+        val authPrefs = getSharedPreferences("TriXpressAuth", Context.MODE_PRIVATE)
+        val userRole = authPrefs.getString("USER_ROLE", "PASSENGER") ?: "PASSENGER"
+        val isDriver = userRole == "DRIVER" || intent.getBooleanExtra("IS_DRIVER", false)
+
+        // Use separate trip history stores for drivers vs passengers
+        val historyPrefName = if (isDriver) "DriverTripHistory" else "PassengerTripHistory"
+        val prefs = getSharedPreferences(historyPrefName, Context.MODE_PRIVATE)
         val jsonStr = prefs.getString("SAVED_TRIPS", "[]") ?: "[]"
 
         try {
@@ -49,7 +56,7 @@ class TripHistoryActivity : AppCompatActivity() {
             } else if (historyContainer != null) {
                 historyContainer.removeAllViews()
                 val emptyTextView = TextView(this).apply {
-                    text = "No completed trips yet.\nBook a ride with TriXpress to see your trip history!"
+                    text = if (isDriver) "No completed driver trips yet.\nAccepted rides will appear here." else "No completed trips yet.\nBook a ride with TriXpress to see your trip history!"
                     setTextColor(android.graphics.Color.WHITE)
                     textSize = 15f
                     gravity = Gravity.CENTER
